@@ -4,19 +4,16 @@
              version="2.2">
 
     <persistence-unit name="myPersistenceUnit" transaction-type="RESOURCE_LOCAL">
-        <!-- Configurazioni del provider JPA (Hibernate) -->
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
         <class>bicocca2023.assignment3.Location</class>
 
         <properties>
-            <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/mydatabase"/>
-            <property name="javax.persistence.jdbc.user" value="username"/>
-            <property name="javax.persistence.jdbc.password" value="password"/>
-            <property name="javax.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>
+            <property name="jakarta.persistence.jdbc.driver" value="org.postgresql.Driver"/>
+            <property name="jakarta.persistence.jdbc.url" value="jdbc:postgresql://db.bvuewycdpvrirgqtfkjv.supabase.co:5432/postgres"/>
+            <property name="jakarta.persistence.jdbc.user" value="postgres"/>
+            <property name="jakarta.persistence.jdbc.password" value="mysecretpassword!!"/>
 
-            <!-- Configurazioni specifiche di Hibernate -->
-            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/>
-            <property name="hibernate.show_sql" value="true"/>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
             <property name="hibernate.hbm2ddl.auto" value="update"/>
         </properties>
     </persistence-unit>

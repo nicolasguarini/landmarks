@@ -1,9 +1,9 @@
 package bicocca2023.assignment3;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 
 @Entity
 public class Location {
@@ -13,8 +13,6 @@ public class Location {
 
     private double latitude;
     private double longitude;
-
-    // Costruttori, getter, setter e altri metodi se necessario
 
     public Long getId() {
         return id;
