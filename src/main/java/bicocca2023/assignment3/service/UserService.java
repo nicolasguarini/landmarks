@@ -1,30 +1,38 @@
 package bicocca2023.assignment3.service;
 
 import bicocca2023.assignment3.model.User;
-import bicocca2023.assignment3.repository.UserRepository;
+import bicocca2023.assignment3.repository.UsersRepository;
 
 import java.util.List;
 
 public class UserService {
-    private final UserRepository userRepository = new UserRepository();
+    private final UsersRepository usersRepository = new UsersRepository();
 
     public List<User> getAllUsers() {
-        return userRepository.findAll();
+        return usersRepository.findAll();
     }
 
     public User getUserById(Long id) {
-        return userRepository.findById(id);
+        return usersRepository.findById(id);
     }
 
     public User createUser(User user) {
-        return userRepository.save(user);
+        return usersRepository.save(user);
     }
 
-    public User updateUser(Long id, User user) {
-        return userRepository.save(user);
+    public User updateUser(User user, Long id) {
+        User existingUser = usersRepository.findById(id);
+
+        if (existingUser != null) {
+            usersRepository.save(user);
+        } else {
+            System.err.println("ERR: user not FOUND!");
+            return null;
+        }
+        return usersRepository.save(existingUser);
     }
 
     public void deleteUser(Long id) {
-        userRepository.delete(id);
+        usersRepository.delete(id);
     }
 }

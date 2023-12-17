@@ -3,7 +3,7 @@ package bicocca2023.assignment3.model;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "lmuser")
+@Table(name = "users")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

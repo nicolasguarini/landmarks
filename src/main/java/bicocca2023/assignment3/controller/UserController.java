@@ -17,12 +17,37 @@ public class UserController {
 
         try{
             List<User> users = userService.getAllUsers();
-            System.out.println("numero di utenti: " + users.size());
-            return gson.toJson(userService.getAllUsers());
+            System.out.println("Number of users: " + users.size());
+            return gson.toJson(users);
         }catch(Exception e){
             e.printStackTrace();
-            return "crashed figa";
+            return "Error in getAllUsers:" + e;
         }
-
     }
+
+    public String getUserById(Request request, Response response) {
+        response.type("application/json");
+
+        try {
+            Long userId = Long.parseLong(request.params(":id"));
+            User user = userService.getUserById(userId);
+
+            if (user != null) {
+                return gson.toJson(user);
+            } else {
+                response.status(404);
+                return "User not found";
+            }
+        } catch (NumberFormatException e) {
+            response.status(400);
+            return "Invalid user ID format";
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.status(500);
+            return "Error in getUserById: " + e;
+        }
+    }
+
+
+
 }
