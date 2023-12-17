@@ -1,5 +1,6 @@
 package bicocca2023.assignment3;
 
+import bicocca2023.assignment3.controller.UserController;
 import bicocca2023.assignment3.util.PersistenceManager;
 import spark.Request;
 import spark.Response;
@@ -8,6 +9,7 @@ import spark.Spark;
 public class Main {
     public static void main(String[] args) {
         PersistenceManager.initialize();
+        UserController userController = new UserController();
 
         Spark.initExceptionHandler((e) -> {
             System.out.println("Server init failed.");
@@ -18,9 +20,8 @@ public class Main {
         Spark.init();
         System.out.println("Server is running on port 8000...");
 
-        Spark.get("/hello", (Request req, Response res) -> "Hello, World!");
+        Spark.get("/users", userController::getAllUsers);
 
         Spark.awaitStop();
-        PersistenceManager.close();
     }
 }
