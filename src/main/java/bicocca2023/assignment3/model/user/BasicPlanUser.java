@@ -4,12 +4,12 @@ import bicocca2023.assignment3.exception.LandmarksLimitException;
 import bicocca2023.assignment3.model.Landmark;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
+import java.util.*;
 
 @Entity
 @DiscriminatorValue(value = "BASIC")
 public class BasicPlanUser extends User{
-    private static final int MAX_LANDMARKS = 10;
-
+   private static final int MAX_LANDMARKS = 10;
    @Override
    public void addLandmark(Landmark landmark) throws LandmarksLimitException {
        if(super.getLandmarks().size() >= MAX_LANDMARKS){
@@ -18,7 +18,6 @@ public class BasicPlanUser extends User{
            super.addLandmark(landmark);
        }
    }
-
    @Override
     public String toString(){
        return "Basic User " + super.toString();

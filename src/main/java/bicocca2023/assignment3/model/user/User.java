@@ -4,8 +4,7 @@ import bicocca2023.assignment3.exception.LandmarksLimitException;
 import bicocca2023.assignment3.model.Landmark;
 import jakarta.persistence.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
