@@ -19,8 +19,14 @@ public class Main {
         System.out.println("Server is running on port 8000...");
 
         Spark.get("/users", userController::getAllUsers);
+        Spark.get("/users/vip/", userController::getVipUsers);
+        Spark.get("/users/basic/", userController::getBasicUsers);
         Spark.get("/users/:id", userController::getUserById);
-        
+
+        Spark.post("/users", userController::createUser);
+
+        Spark.delete("/users/:id", userController::deleteUser);
+
         Spark.awaitStop();
     }
 }

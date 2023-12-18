@@ -14,6 +14,8 @@ abstract public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(unique = true)
     private String username;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -21,8 +23,7 @@ abstract public class User {
 
     public User(){}
 
-    public User(Long id, String username){
-        this.id = id;
+    public User(String username){
         this.username = username;
     }
 

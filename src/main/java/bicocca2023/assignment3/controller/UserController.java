@@ -1,8 +1,11 @@
 package bicocca2023.assignment3.controller;
 
+import bicocca2023.assignment3.model.user.BasicPlanUser;
 import bicocca2023.assignment3.model.user.User;
+import bicocca2023.assignment3.model.user.VipPlanUser;
 import bicocca2023.assignment3.service.UserService;
 import com.google.gson.Gson;
+import jakarta.persistence.PersistenceException;
 import spark.Request;
 import spark.Response;
 
@@ -16,14 +19,41 @@ public class UserController {
         response.type("application/json");
 
         try{
+            response.status(200);
             List<User> users = userService.getAllUsers();
-            for(User u : users){
-                System.out.println(u);
-            }
             return gson.toJson(users);
         }catch(Exception e){
+            response.status(500);
             e.printStackTrace();
             return "Error in getAllUsers:" + e;
+        }
+    }
+
+    public String getVipUsers(Request request, Response response) {
+        response.type("application/json");
+
+        try{
+            response.status(200);
+            List<VipPlanUser> users = userService.getVipUsers();
+            return gson.toJson(users);
+        }catch(Exception e){
+            response.status(500);
+            e.printStackTrace();
+            return "Error:" + e.getMessage();
+        }
+    }
+
+    public String getBasicUsers(Request request, Response response) {
+        response.type("application/json");
+
+        try{
+            response.status(200);
+            List<BasicPlanUser> users = userService.getBasicUsers();
+            return gson.toJson(users);
+        }catch(Exception e){
+            response.status(500);
+            e.printStackTrace();
+            return "Error:" + e.getMessage();
         }
     }
 
@@ -35,6 +65,7 @@ public class UserController {
             User user = userService.getUserById(userId);
 
             if (user != null) {
+                response.status(200);
                 return gson.toJson(user);
             } else {
                 response.status(404);
@@ -50,29 +81,56 @@ public class UserController {
         }
     }
 
-
-
     public String createUser(Request request, Response response) {
         response.type("application/json");
 
-        try {
-            User newUser = gson.fromJson(request.body(), User.class);
-            User createdUser = userService.createUser(newUser);
+        try{
+            String username = request.queryMap("username").value();
+            String userType = request.queryMap("type").value();
 
+            if (username == null){
+                throw new IllegalArgumentException("No username provided");
+            }
+
+            User user;
+            if (userType != null && userType.equalsIgnoreCase("vip")) {
+                user = new VipPlanUser();
+            } else {
+                user = new BasicPlanUser();
+            }
+
+            user.setUsername(username.toLowerCase());
+
+            User createdUser = userService.createUser(user);
             if (createdUser != null) {
-                response.status(201); // Created
+                response.status(201);
                 return gson.toJson(createdUser);
             } else {
-                response.status(400); // Bad Request
+                response.status(400);
                 return "Error creating user";
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (PersistenceException e){
             response.status(500);
-            return "Error in createUser: " + e;
+            return "Error creating user";
         }
     }
-/*
+
+    public String deleteUser(Request request, Response response) {
+        try {
+            Long userId = Long.parseLong(request.params(":id"));
+            userService.deleteUser(userId);
+            response.status(200);
+            return gson.toJson("User successfully deleted");
+        } catch (NumberFormatException e) {
+            response.status(400);
+            return "Invalid user ID format";
+        } catch (Exception e) {
+            response.status(500);
+            return "Error in deleteUser: " + e.getMessage();
+        }
+    }
+
+    /*
     public String updateUser(Request request, Response response) {
         response.type("application/json");
 
@@ -97,24 +155,6 @@ public class UserController {
             return "Error in updateUser: " + e;
         }
     }
-
-    public String deleteUser(Request request, Response response) {
-        response.type("application/json");
-
-        try {
-            Long userId = Long.parseLong(request.params(":id"));
-            userService.deleteUser(userId);
-            response.status(204); // No Content
-            return "";
-        } catch (NumberFormatException e) {
-            response.status(400);
-            return "Invalid user ID format";
-        } catch (Exception e) {
-            e.printStackTrace();
-            response.status(500);
-            return "Error in deleteUser: " + e;
-        }
-    }
-*/
+     */
 }
 
