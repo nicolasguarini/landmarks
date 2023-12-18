@@ -41,11 +41,9 @@ abstract public class User {
     public void addLandmark(Landmark landmark) throws LandmarksLimitException {
         landmarks.add(landmark);
     }
-
     public List<Landmark> getLandmarks(){
         return landmarks;
     }
-
     @Override
     public String toString(){
         return "(" + id + ") - " + username;

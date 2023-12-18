@@ -17,8 +17,6 @@ public class Landmark {
     @JoinColumn(name = "user_id")
     private User user;
 
-
-    //set get name
     public Coordinate getCoordinate() {
         return coordinate;
     }
