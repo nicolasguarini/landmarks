@@ -17,7 +17,9 @@ public class UserController {
 
         try{
             List<User> users = userService.getAllUsers();
-            System.out.println("Number of users: " + users.size());
+            for(User u : users){
+                System.out.println(u);
+            }
             return gson.toJson(users);
         }catch(Exception e){
             e.printStackTrace();
