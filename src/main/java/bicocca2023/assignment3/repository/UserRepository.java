@@ -1,6 +1,6 @@
 package bicocca2023.assignment3.repository;
 
-import bicocca2023.assignment3.model.User;
+import bicocca2023.assignment3.model.user.User;
 import bicocca2023.assignment3.util.PersistenceManager;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;

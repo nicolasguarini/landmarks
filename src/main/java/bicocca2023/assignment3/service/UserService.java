@@ -1,12 +1,12 @@
 package bicocca2023.assignment3.service;
 
-import bicocca2023.assignment3.model.User;
-import bicocca2023.assignment3.repository.UsersRepository;
+import bicocca2023.assignment3.model.user.User;
+import bicocca2023.assignment3.repository.UserRepository;
 
 import java.util.List;
 
 public class UserService {
-    private final UsersRepository usersRepository = new UsersRepository();
+    private final UserRepository usersRepository = new UserRepository();
 
     public List<User> getAllUsers() {
         return usersRepository.findAll();
