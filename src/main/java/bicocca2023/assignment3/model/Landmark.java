@@ -3,11 +3,13 @@ package bicocca2023.assignment3.model;
 import bicocca2023.assignment3.model.user.User;
 import jakarta.persistence.*;
 
+import java.util.UUID;
+
 @Entity
 public class Landmark {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
     private String name;
 
     @OneToOne(mappedBy = "landmark", cascade = CascadeType.ALL, orphanRemoval = true)

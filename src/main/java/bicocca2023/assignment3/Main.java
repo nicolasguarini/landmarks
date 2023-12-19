@@ -29,6 +29,8 @@ public class Main {
 
         Spark.put("/users/:id", userController::updateUser);
 
+        Spark.put("/basicToVip/:id", userController::upgradeUserToVip);
+
         Spark.awaitStop();
     }
 }

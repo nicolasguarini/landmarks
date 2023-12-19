@@ -20,7 +20,7 @@ public class UserRepository {
 
     public List<VipPlanUser> findAllVips() {
         try (EntityManager entityManager = PersistenceManager.getEntityManagerFactory().createEntityManager()) {
-            return entityManager.createQuery("SELECT u FROM VipPlanUser u", VipPlanUser.class).getResultList();
+            return entityManager.createQuery("SELECT u FROM User u WHERE TYPE(u) = VipPlanUser ", VipPlanUser.class).getResultList();
         }
     }
 
@@ -69,6 +69,23 @@ public class UserRepository {
             if (user.getId() != null) {
                 // Existing user, merge it
                 user = entityManager.merge(user);
+            }
+
+            entityManager.getTransaction().commit();
+            return user;
+        }
+    }
+
+    public User upgrade(UUID id) {
+        try (EntityManager entityManager = PersistenceManager.getEntityManagerFactory().createEntityManager()) {
+            entityManager.getTransaction().begin();
+
+            User user = entityManager.find(User.class, id);
+
+            if(user instanceof BasicPlanUser){
+                entityManager.remove(user);
+                VipPlanUser vipUser = new VipPlanUser(user.getId());
+                vipUser.setUsername(user.getUsername());
             }
 
             entityManager.getTransaction().commit();

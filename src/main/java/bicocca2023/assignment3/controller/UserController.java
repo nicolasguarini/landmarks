@@ -168,5 +168,29 @@ public class UserController {
         }
     }
 
+    public String upgradeUserToVip(Request request, Response response) {
+        response.type("application/json");
+
+        try {
+            UUID userId = UUID.fromString(request.params(":id"));
+            User upgradedUser = userService.upgradeUserToVip(userId);
+
+            if (upgradedUser != null) {
+                response.status(200);
+                return gson.toJson(upgradedUser);
+            } else {
+                response.status(404);
+                return "User not found or not eligible for upgrade";
+            }
+        } catch (NumberFormatException e) {
+            response.status(400);
+            return "Invalid user ID format";
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.status(500);
+            return "Error in upgradeUserToVip: " + e;
+        }
+    }
+
 }
 
