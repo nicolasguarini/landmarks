@@ -8,12 +8,11 @@ import jakarta.persistence.*;
 @DiscriminatorValue("VIP")
 public class VipPlanUser extends User {
     public VipPlanUser() {}
-
+/*
     @Override
     public void addLandmark(Landmark landmark) throws LandmarksLimitException {
         super.addLandmark(landmark);
-    }
-
+    }*/
     @Override
     public String toString(){
         return "VIP User " + super.toString();

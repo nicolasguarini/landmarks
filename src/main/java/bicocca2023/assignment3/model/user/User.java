@@ -3,6 +3,7 @@ package bicocca2023.assignment3.model.user;
 import bicocca2023.assignment3.exception.LandmarksLimitException;
 import bicocca2023.assignment3.model.Landmark;
 import jakarta.persistence.*;
+import org.hibernate.annotations.GenericGenerator;
 
 import java.util.*;
 
@@ -12,8 +13,8 @@ import java.util.*;
 @Table(name = "users")
 abstract public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     @Column(unique = true)
     private String username;
@@ -27,7 +28,7 @@ abstract public class User {
         this.username = username;
     }
 
-    public Long getId(){
+    public UUID getId(){
         return id;
     }
 

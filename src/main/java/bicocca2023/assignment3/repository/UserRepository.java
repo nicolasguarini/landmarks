@@ -8,10 +8,11 @@ import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 
 @Transactional
 public class UserRepository {
-    public List<User> findAll() {
+    public List<User>  findAll() {
         try (EntityManager entityManager = PersistenceManager.getEntityManagerFactory().createEntityManager()) {
             return entityManager.createQuery("SELECT u FROM User u", User.class).getResultList();
         }
@@ -29,7 +30,7 @@ public class UserRepository {
         }
     }
 
-    public User findById(Long id){
+    public User findById(UUID id){
         try (EntityManager entityManager = PersistenceManager.getEntityManagerFactory().createEntityManager()) {
             return entityManager.find(User.class, id);
         }
@@ -48,7 +49,7 @@ public class UserRepository {
         }
     }
 
-    public void delete(Long id) {
+    public void delete(UUID id) {
         try (EntityManager entityManager = PersistenceManager.getEntityManagerFactory().createEntityManager()) {
             entityManager.getTransaction().begin();
             User user = entityManager.find(User.class, id);

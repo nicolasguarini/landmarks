@@ -6,6 +6,7 @@ import bicocca2023.assignment3.model.user.VipPlanUser;
 import bicocca2023.assignment3.repository.UserRepository;
 
 import java.util.List;
+import java.util.UUID;
 
 public class UserService {
     private final UserRepository usersRepository = new UserRepository();
@@ -16,11 +17,11 @@ public class UserService {
 
     public List<BasicPlanUser> getBasicUsers() { return usersRepository.findAllBasics(); }
 
-    public User getUserById(Long id) { return usersRepository.findById(id); }
+    public User getUserById(UUID id) { return usersRepository.findById(id); }
 
     public User createUser(User user) { return usersRepository.save(user); }
 
-    public User updateUser(User user, Long id) {
+    public User updateUser(User user, UUID id) {
         User existingUser = usersRepository.findById(id);
 
         if (existingUser != null) {
@@ -32,6 +33,6 @@ public class UserService {
         return usersRepository.save(existingUser);
     }
 
-    public void deleteUser(Long id) { usersRepository.delete(id); }
+    public void deleteUser(UUID id) { usersRepository.delete(id); }
 
 }

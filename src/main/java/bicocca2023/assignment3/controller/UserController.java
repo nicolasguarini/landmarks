@@ -10,6 +10,7 @@ import spark.Request;
 import spark.Response;
 
 import java.util.List;
+import java.util.UUID;
 
 public class UserController {
     private final UserService userService = new UserService();
@@ -61,7 +62,7 @@ public class UserController {
         response.type("application/json");
 
         try {
-            Long userId = Long.parseLong(request.params(":id"));
+            UUID userId = UUID.fromString(request.params(":id"));
             User user = userService.getUserById(userId);
 
             if (user != null) {
@@ -117,10 +118,10 @@ public class UserController {
 
     public String deleteUser(Request request, Response response) {
         try {
-            Long userId = Long.parseLong(request.params(":id"));
+            UUID userId = UUID.fromString(request.params(":id"));
             userService.deleteUser(userId);
             response.status(200);
-            return gson.toJson("User successfully deleted");
+            return gson.toJson("User [:id ->" + request.params(":id") + "] successfully deleted");
         } catch (NumberFormatException e) {
             response.status(400);
             return "Invalid user ID format";
