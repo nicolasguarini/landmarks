@@ -131,18 +131,29 @@ public class UserController {
         }
     }
 
-    /*
     public String updateUser(Request request, Response response) {
         response.type("application/json");
 
         try {
-            Long userId = Long.parseLong(request.params(":id"));
-            String newUsername = gson.fromJson(request.body(), String.class);
+            UUID userId = UUID.fromString(request.params(":id"));
+            User existingUser = userService.getUserById(userId);
 
-            User updatedUser = userService.updateUser(newUsername, userId);
+            if (existingUser != null) {
+                String newUsername = request.queryMap("username").value();
+                if (newUsername != null) {
+                    existingUser.setUsername(newUsername.toLowerCase());
+                }
 
-            if (updatedUser != null) {
-                return gson.toJson(updatedUser);
+
+                User updatedUser = userService.updateUser(existingUser);
+
+                if (updatedUser != null) {
+                    response.status(200);
+                    return gson.toJson(updatedUser);
+                } else {
+                    response.status(500);
+                    return "Error updating user";
+                }
             } else {
                 response.status(404);
                 return "User not found";
@@ -156,6 +167,6 @@ public class UserController {
             return "Error in updateUser: " + e;
         }
     }
-     */
+
 }
 

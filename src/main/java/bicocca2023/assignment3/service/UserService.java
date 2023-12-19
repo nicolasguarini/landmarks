@@ -9,30 +9,20 @@ import java.util.List;
 import java.util.UUID;
 
 public class UserService {
-    private final UserRepository usersRepository = new UserRepository();
+    private final UserRepository userRepository = new UserRepository();
 
-    public List<User> getAllUsers() { return usersRepository.findAll(); }
+    public List<User> getAllUsers() { return userRepository.findAll(); }
 
-    public List<VipPlanUser> getVipUsers() { return usersRepository.findAllVips(); }
+    public List<VipPlanUser> getVipUsers() { return userRepository.findAllVips(); }
 
-    public List<BasicPlanUser> getBasicUsers() { return usersRepository.findAllBasics(); }
+    public List<BasicPlanUser> getBasicUsers() { return userRepository.findAllBasics(); }
 
-    public User getUserById(UUID id) { return usersRepository.findById(id); }
+    public User getUserById(UUID id) { return userRepository.findById(id); }
 
-    public User createUser(User user) { return usersRepository.save(user); }
+    public User createUser(User user) { return userRepository.save(user); }
 
-    public User updateUser(User user, UUID id) {
-        User existingUser = usersRepository.findById(id);
+    public User updateUser(User user) { return userRepository.update(user); }
 
-        if (existingUser != null) {
-            usersRepository.save(user);
-        } else {
-            System.err.println("ERR: user not FOUND!");
-            return null;
-        }
-        return usersRepository.save(existingUser);
-    }
-
-    public void deleteUser(UUID id) { usersRepository.delete(id); }
+    public void deleteUser(UUID id) { userRepository.delete(id); }
 
 }

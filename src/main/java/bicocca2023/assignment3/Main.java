@@ -27,6 +27,8 @@ public class Main {
 
         Spark.delete("/users/:id", userController::deleteUser);
 
+        Spark.put("/users/:id", userController::updateUser);
+
         Spark.awaitStop();
     }
 }

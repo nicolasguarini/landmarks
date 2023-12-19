@@ -61,4 +61,18 @@ public class UserRepository {
             entityManager.getTransaction().commit();
         }
     }
+
+    public User update(User user) {
+        try (EntityManager entityManager = PersistenceManager.getEntityManagerFactory().createEntityManager()) {
+            entityManager.getTransaction().begin();
+
+            if (user.getId() != null) {
+                // Existing user, merge it
+                user = entityManager.merge(user);
+            }
+
+            entityManager.getTransaction().commit();
+            return user;
+        }
+    }
 }
