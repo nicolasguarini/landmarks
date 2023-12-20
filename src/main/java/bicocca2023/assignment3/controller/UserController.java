@@ -173,9 +173,11 @@ public class UserController {
 
         try {
             UUID userId = UUID.fromString(request.params(":id"));
-            User upgradedUser = userService.upgradeUserToVip(userId);
+            User existingUser = userService.getUserById(userId);
 
-            if (upgradedUser != null) {
+            if (existingUser != null) {
+                User upgradedUser = userService.upgradeUserToVip(existingUser);
+
                 response.status(200);
                 return gson.toJson(upgradedUser);
             } else {
@@ -192,5 +194,30 @@ public class UserController {
         }
     }
 
+    public String demoteUserToBasic(Request request, Response response) {
+        response.type("application/json");
+
+        try {
+            UUID userId = UUID.fromString(request.params(":id"));
+            User existingUser = userService.getUserById(userId);
+
+            if (existingUser != null) {
+                User demotedUser = userService.demoteUserToBasic(existingUser);
+
+                response.status(200);
+                return gson.toJson(demotedUser);
+            } else {
+                response.status(404);
+                return "User not found or not eligible for upgrade";
+            }
+        } catch (NumberFormatException e) {
+            response.status(400);
+            return "Invalid user ID format";
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.status(500);
+            return "Error in upgradeUserToVip: " + e;
+        }
+    }
 }
 

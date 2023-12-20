@@ -76,16 +76,31 @@ public class UserRepository {
         }
     }
 
-    public User upgrade(UUID id) {
+    public User upgrade(User user) {
         try (EntityManager entityManager = PersistenceManager.getEntityManagerFactory().createEntityManager()) {
             entityManager.getTransaction().begin();
 
-            User user = entityManager.find(User.class, id);
-
             if(user instanceof BasicPlanUser){
-                entityManager.remove(user);
+                delete(user.getId());
                 VipPlanUser vipUser = new VipPlanUser(user.getId());
                 vipUser.setUsername(user.getUsername());
+                save(vipUser);
+            }
+
+            entityManager.getTransaction().commit();
+            return user;
+        }
+    }
+
+    public User demote(User user) {
+        try (EntityManager entityManager = PersistenceManager.getEntityManagerFactory().createEntityManager()) {
+            entityManager.getTransaction().begin();
+
+            if(user instanceof VipPlanUser){
+                delete(user.getId());
+                BasicPlanUser basicUser = new BasicPlanUser(user.getId());
+                basicUser.setUsername(user.getUsername());
+                save(basicUser);
             }
 
             entityManager.getTransaction().commit();

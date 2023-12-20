@@ -9,6 +9,10 @@ import java.util.*;
 @Entity
 @DiscriminatorValue(value = "BASIC")
 public class BasicPlanUser extends User{
+    public BasicPlanUser() {}
+    public BasicPlanUser(UUID id) {
+        setId(id);
+    }
    private static final int MAX_LANDMARKS = 10;
    @Override
    public void addLandmark(Landmark landmark) throws LandmarksLimitException {

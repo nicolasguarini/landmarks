@@ -21,10 +21,12 @@ public class UserService {
 
     public User createUser(User user) { return userRepository.save(user); }
 
-    public User updateUser(User user) { return userRepository.update(user); }
 
     public void deleteUser(UUID id) { userRepository.delete(id); }
 
-    public User upgradeUserToVip(UUID id) { return userRepository.upgrade(id); }
+    public User updateUser(User user) { return userRepository.update(user); }
 
+    public User upgradeUserToVip(User user) { return userRepository.upgrade(user); }
+
+    public User demoteUserToBasic(User user) { return userRepository.demote(user); }
 }
