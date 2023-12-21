@@ -29,20 +29,27 @@ public class Main {
         Spark.port(8000);
         Spark.init();
         System.out.println("Server is running on port 8000...");
+        Spark.path("/api", () -> {
+            // User Operations
+            Spark.path("/users", () -> {
+                Spark.get("", userController::getAllUsers);
+                Spark.get("/vip", userController::getVipUsers);
+                Spark.get("/basic", userController::getBasicUsers);
+                Spark.get("/:id", userController::getUserById);
+                Spark.post("", userController::createUser);
+                Spark.put("/:id", userController::updateUser);
+                Spark.put("/:id/upgrade", userController::upgradeUserToVip);
+                Spark.put("/:id/demote", userController::demoteUserToBasic);
+                Spark.delete("/:id", userController::deleteUser);
+            });
 
-        Spark.get("/users", userController::getAllUsers);
-        Spark.get("/users/vip/", userController::getVipUsers);
-        Spark.get("/users/basic/", userController::getBasicUsers);
-        Spark.get("/users/:id", userController::getUserById);
-        Spark.post("/users", userController::createUser);
-        Spark.put("/users/:id", userController::updateUser);
-        Spark.put("/users/:id/upgrade", userController::upgradeUserToVip);
-        Spark.put("/users/:id/demote", userController::demoteUserToBasic);
-        Spark.delete("/users/:id", userController::deleteUser);
+            // Landmark Operations
+            Spark.path("/landmarks", () -> {
+                Spark.get("", landmarkController::getAllLandmarks);
+                Spark.post("", landmarkController::createLandmark);
+            });
 
-        Spark.get("/landmarks", landmarkController::getAllLandmarks);
-        Spark.post("/landmarks", landmarkController::createLandmark);
-
-        Spark.awaitStop();
+            Spark.awaitStop();
+        });
     }
 }

@@ -47,11 +47,11 @@ public class LandmarkController {
                 return gson.toJson(createdLandmark);
             } else {
                 response.status(400);
-                return "Error creating user";
+                return "Error creating landmark";
             }
         } catch (PersistenceException e){
             response.status(500);
-            return "Error creating user" + e;
+            return "Error creating landmark [Error: " + e + "]";
         } catch (LandmarksLimitException e) {
             response.status(400);
             return "User have reached landmarks limit";

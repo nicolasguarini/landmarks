@@ -15,6 +15,7 @@ public class Landmark {
     private UUID id;
 
     @Expose
+    @Column(unique = true)
     private String name;
 
     @Expose
