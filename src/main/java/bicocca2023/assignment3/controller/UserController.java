@@ -25,7 +25,6 @@ public class UserController {
             return gson.toJson(users);
         }catch(Exception e){
             response.status(500);
-            e.printStackTrace();
             return "Error in getAllUsers:" + e;
         }
     }
@@ -57,6 +56,8 @@ public class UserController {
             return "Error:" + e.getMessage();
         }
     }
+
+    
 
     public String getUserById(Request request, Response response) {
         response.type("application/json");

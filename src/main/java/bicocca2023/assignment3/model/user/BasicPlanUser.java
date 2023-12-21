@@ -13,6 +13,8 @@ public class BasicPlanUser extends User{
     public BasicPlanUser(UUID id) {
         setId(id);
     }
+
+   /*
    private static final int MAX_LANDMARKS = 10;
    @Override
    public void addLandmark(Landmark landmark) throws LandmarksLimitException {
@@ -22,6 +24,8 @@ public class BasicPlanUser extends User{
            super.addLandmark(landmark);
        }
    }
+
+    */
    @Override
     public String toString(){
        return "Basic User " + super.toString();

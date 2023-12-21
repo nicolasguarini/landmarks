@@ -2,6 +2,7 @@ package bicocca2023.assignment3.model;
 
 import bicocca2023.assignment3.model.user.User;
 import jakarta.persistence.*;
+import jakarta.transaction.Transactional;
 
 import java.util.UUID;
 
@@ -29,7 +30,9 @@ public class Landmark {
 
     public void setUser(User user){ this.user = user; }
 
-    public User getUser(){ return this.user; }
+    public User getUser() { return user; }
+
+
     /*
     @OneToOne(mappedBy = "landmark", cascade = CascadeType.ALL, orphanRemoval = true)
     private Coordinate coordinate;

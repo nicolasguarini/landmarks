@@ -22,10 +22,15 @@ public class LandmarkController {
 
     public String createLandmark(Request request, Response response) {
         response.type("application/json");
-
+        System.out.println("qui ci è arrivato..");
         try{
-            String name = String.format(request.params(":name"));
-            UUID userId = UUID.fromString(request.queryMap("id").value());
+            String name = request.queryMap("nameOfLandmark").value();
+
+            if(name != null)  System.out.println("name non è null " + name);
+
+            UUID userId = UUID.fromString(request.queryMap("userid").value());
+            System.out.println("UserID from query map: " + request.queryMap("userid").value());
+
 
             if(userService.getUserById(userId) == null){
                 throw new IllegalArgumentException("User ID doesn't exist!");
@@ -38,6 +43,9 @@ public class LandmarkController {
             Landmark landmark = new Landmark();;
             landmark.setName(name);
             landmark.setUser(userService.getUserById(userId));
+            System.out.println("Landmark user: " + landmark.getUser());
+            System.out.println("Landmark name: " + landmark.getName());
+            System.out.println("Landmark id: " + landmark.getId());
 
             Landmark createdLandmark= landmarkService.createLandmark(landmark);
             if (createdLandmark != null) {

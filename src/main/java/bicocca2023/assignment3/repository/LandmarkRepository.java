@@ -7,19 +7,13 @@ import jakarta.persistence.EntityManager;
 public class LandmarkRepository {
 
     public Landmark save(Landmark landmark){
-        EntityManager entityManager = PersistenceManager.getEntityManagerFactory().createEntityManager();
-        try {
+        try (EntityManager entityManager = PersistenceManager.getEntityManagerFactory().createEntityManager()){
             entityManager.getTransaction().begin();
             if (landmark.getId() == null) {
                 entityManager.persist(landmark);
             }
             entityManager.getTransaction().commit();
             return landmark;
-        } catch (Exception e) {
-            if (entityManager.getTransaction().isActive()) {
-                entityManager.getTransaction().rollback();
-            }
-            throw e; // rethrow the exception after handling the rollback
         }
     }
 }

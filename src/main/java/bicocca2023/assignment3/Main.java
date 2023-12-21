@@ -28,7 +28,7 @@ public class Main {
 
         Spark.post("/users", userController::createUser);
 
-        Spark.post("/landmarks/:name", landmarkController::createLandmark);
+        Spark.post("/landmarks", landmarkController::createLandmark);
 
         Spark.delete("/users/:id", userController::deleteUser);
 
