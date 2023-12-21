@@ -6,12 +6,14 @@
     <persistence-unit name="assignment3_persistence_unit" transaction-type="RESOURCE_LOCAL">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
         <class>bicocca2023.assignment3.model.user.User</class>
+        <class>bicocca2023.assignment3.model.Landmark</class>
+        <class>bicocca2023.assignment3.model.Coordinate</class>
 
         <properties>
             <property name="jakarta.persistence.jdbc.driver" value="org.postgresql.Driver"/>
-            <property name="jakarta.persistence.jdbc.url" value="jdbc:postgresql://db.dosqijufdnobcxfsjyos.supabase.co/postgres"/>
-            <property name="jakarta.persistence.jdbc.user" value="postgres"/>
-            <property name="jakarta.persistence.jdbc.password" value="fKPf7XKc2QRj8Cqy"/>
+            <property name="jakarta.persistence.jdbc.url" value="jdbc:postgresql://YOUR_HOST:YOUR_PORT/YOUR_DB_NAME"/>
+            <property name="jakarta.persistence.jdbc.user" value="YOUR_DB_USER"/>
+            <property name="jakarta.persistence.jdbc.password" value="YOUR_PASSWORD"/>
 
             <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
             <property name="hibernate.hbm2ddl.auto" value="update"/>
