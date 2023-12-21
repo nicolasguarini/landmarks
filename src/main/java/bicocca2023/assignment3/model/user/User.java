@@ -2,7 +2,6 @@ package bicocca2023.assignment3.model.user;
 
 import bicocca2023.assignment3.exception.LandmarksLimitException;
 import bicocca2023.assignment3.model.Landmark;
-import com.google.gson.annotations.Expose;
 import jakarta.persistence.*;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -21,7 +20,6 @@ abstract public class User {
     private String username;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Expose(serialize = false, deserialize = false)
     private final List<Landmark> landmarks = new ArrayList<>();
 
     public User(){}

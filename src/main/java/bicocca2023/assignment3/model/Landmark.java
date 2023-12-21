@@ -14,7 +14,7 @@ public class Landmark {
     private String name;
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private User user;
+    private  User user;
 
     public UUID getId(){
         return id;
