@@ -41,6 +41,8 @@ public class UserRepository {
             entityManager.getTransaction().begin();
             if (user.getId() == null) {
                 entityManager.persist(user);
+            } else {
+                user = entityManager.merge(user);
             }
             entityManager.getTransaction().commit();
             return user;
@@ -79,11 +81,9 @@ public class UserRepository {
             entityManager.getTransaction().begin();
 
             if(user instanceof BasicPlanUser){
-                UUID oldUUID = user.getId();
                 delete(user.getId());
-                VipPlanUser vipUser = new VipPlanUser(oldUUID);
+                VipPlanUser vipUser = new VipPlanUser(user.getId());
                 vipUser.setUsername(user.getUsername());
-                vipUser.setId(user.getId());
                 save(vipUser);
             }
 
