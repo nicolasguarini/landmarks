@@ -12,7 +12,7 @@ import java.util.UUID;
 
 @Transactional
 public class UserRepository {
-    public List<User>  findAll() {
+    public List<User> findAll() {
         try (EntityManager entityManager = PersistenceManager.getEntityManagerFactory().createEntityManager()) {
             return entityManager.createQuery("SELECT u FROM User u", User.class).getResultList();
         }
@@ -30,7 +30,7 @@ public class UserRepository {
         }
     }
 
-    public User findById(UUID id){
+    public User findById(UUID id) {
         try (EntityManager entityManager = PersistenceManager.getEntityManagerFactory().createEntityManager()) {
             return entityManager.find(User.class, id);
         }
@@ -53,11 +53,9 @@ public class UserRepository {
         try (EntityManager entityManager = PersistenceManager.getEntityManagerFactory().createEntityManager()) {
             entityManager.getTransaction().begin();
             User user = entityManager.find(User.class, id);
-
             if (user != null) {
                 entityManager.remove(user);
             }
-
             entityManager.getTransaction().commit();
         }
     }
@@ -80,7 +78,7 @@ public class UserRepository {
         try (EntityManager entityManager = PersistenceManager.getEntityManagerFactory().createEntityManager()) {
             entityManager.getTransaction().begin();
 
-            if(user instanceof BasicPlanUser){
+            if (user instanceof BasicPlanUser) {
                 delete(user.getId());
                 VipPlanUser vipUser = new VipPlanUser(user.getId());
                 vipUser.setUsername(user.getUsername());
@@ -96,7 +94,7 @@ public class UserRepository {
         try (EntityManager entityManager = PersistenceManager.getEntityManagerFactory().createEntityManager()) {
             entityManager.getTransaction().begin();
 
-            if(user instanceof VipPlanUser){
+            if (user instanceof VipPlanUser) {
                 delete(user.getId());
                 BasicPlanUser basicUser = new BasicPlanUser(user.getId());
                 basicUser.setUsername(user.getUsername());

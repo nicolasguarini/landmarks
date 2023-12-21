@@ -4,6 +4,7 @@ import bicocca2023.assignment3.model.Landmark;
 import bicocca2023.assignment3.repository.LandmarkRepository;
 
 import java.util.List;
+import java.util.UUID;
 
 public class LandmarkService {
     private final LandmarkRepository landmarkRepository = new LandmarkRepository();
@@ -14,5 +15,13 @@ public class LandmarkService {
 
     public List<Landmark> getAllLandmarks() {
         return landmarkRepository.findAll();
+    }
+
+    public void deleteLandmark(UUID id) {
+        landmarkRepository.delete(id);
+    }
+
+    public Landmark getUserById(UUID id) {
+        return landmarkRepository.findById(id);
     }
 }

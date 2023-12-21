@@ -2,9 +2,7 @@ package bicocca2023.assignment3.controller;
 
 import bicocca2023.assignment3.exception.LandmarksLimitException;
 import bicocca2023.assignment3.model.Landmark;
-import bicocca2023.assignment3.model.user.BasicPlanUser;
 import bicocca2023.assignment3.model.user.User;
-import bicocca2023.assignment3.model.user.VipPlanUser;
 import bicocca2023.assignment3.service.LandmarkService;
 import bicocca2023.assignment3.service.UserService;
 import com.google.gson.Gson;
@@ -25,23 +23,23 @@ public class LandmarkController {
     public String createLandmark(Request request, Response response) {
         response.type("application/json");
 
-        try{
+        try {
             String name = request.queryMap("name").value();
             UUID userId = UUID.fromString(request.queryMap("userid").value());
             User user = userService.getUserById(userId);
 
-            if(name == null){
+            if (name == null) {
                 throw new IllegalArgumentException("No name provided");
-            } else if(user == null){
+            } else if (user == null) {
                 throw new IllegalArgumentException("User ID doesn't exist!");
             }
 
-            Landmark landmark = new Landmark();;
+            Landmark landmark = new Landmark();
             landmark.setName(name);
             landmark.setUser(userService.getUserById(userId));
             user.addLandmark(landmark);
 
-            Landmark createdLandmark= landmarkService.createLandmark(landmark);
+            Landmark createdLandmark = landmarkService.createLandmark(landmark);
             if (createdLandmark != null) {
                 response.status(201);
                 return gson.toJson(createdLandmark);
@@ -49,7 +47,7 @@ public class LandmarkController {
                 response.status(400);
                 return "Error creating landmark";
             }
-        } catch (PersistenceException e){
+        } catch (PersistenceException e) {
             response.status(500);
             return "Error creating landmark [Error: " + e + "]";
         } catch (LandmarksLimitException e) {
@@ -61,14 +59,51 @@ public class LandmarkController {
     public String getAllLandmarks(Request request, Response response) {
         response.type("application/json");
 
-        try{
+        try {
             response.status(200);
             List<Landmark> landmarks = landmarkService.getAllLandmarks();
             return gson.toJson(landmarks);
-        }catch(Exception e){
+        } catch (Exception e) {
             response.status(500);
             e.printStackTrace();
             return "Error";
+        }
+    }
+
+    public Object deleteLandmark(Request request, Response response) {
+        try {
+            UUID landmarkId = UUID.fromString(request.params(":id"));
+            landmarkService.deleteLandmark(landmarkId);
+            response.status(200);
+            return gson.toJson("Landmark [:id ->" + request.params(":id") + "] successfully deleted");
+
+        } catch (Exception e) {
+            response.status(500);
+            return "Error in deleteLandmark: " + e.getMessage();
+
+        }
+    }
+
+    public Object getLandmarkById(Request request, Response response) {
+        response.type("application/json");
+        try {
+            UUID landmarkId = UUID.fromString(request.params(":id"));
+            Landmark landmark = landmarkService.getUserById(landmarkId);
+
+            if (landmark != null) {
+                response.status(200);
+                return gson.toJson(landmark);
+            } else {
+                response.status(404);
+                return "User not found";
+            }
+        } catch (NumberFormatException e) {
+            response.status(400);
+            return "Invalid user ID format";
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.status(500);
+            return "Error in getUserById: " + e;
         }
     }
 }
