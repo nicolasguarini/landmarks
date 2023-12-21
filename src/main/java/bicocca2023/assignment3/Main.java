@@ -2,6 +2,7 @@ package bicocca2023.assignment3;
 
 import bicocca2023.assignment3.controller.LandmarkController;
 import bicocca2023.assignment3.controller.UserController;
+import bicocca2023.assignment3.controller.UserFollowerController;
 import bicocca2023.assignment3.util.PersistenceManager;
 import spark.Spark;
 
@@ -10,6 +11,8 @@ public class Main {
         PersistenceManager.initialize();
         UserController userController = new UserController();
         LandmarkController landmarkController = new LandmarkController();
+        UserFollowerController userFollowerController = new UserFollowerController();
+
 
         Spark.initExceptionHandler((e) -> {
             System.out.println("Server init failed.");
@@ -31,6 +34,8 @@ public class Main {
                 Spark.put("/:id/upgrade", userController::upgradeUserToVip);
                 Spark.put("/:id/demote", userController::demoteUserToBasic);
                 Spark.delete("/:id", userController::deleteUser);
+                Spark.post("/:followingId/follow/:followerId", userFollowerController::followUser);
+                //Spark.get("/:id/followers", userFollowerController::getFollowers);
             });
 
             Spark.path("/landmarks", () -> {

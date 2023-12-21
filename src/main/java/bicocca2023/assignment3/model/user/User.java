@@ -16,6 +16,14 @@ import java.util.UUID;
 abstract public class User {
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = {CascadeType.DETACH}, orphanRemoval = true)
     private final List<Landmark> landmarks = new ArrayList<>();
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "follower")
+    private final List<UserFollower> followers = new ArrayList<>();
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "following")
+    private final List<UserFollower> following = new ArrayList<>();
+
+
     @Expose
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -61,5 +69,42 @@ abstract public class User {
     @Override
     public String toString() {
         return "(" + id + ") - " + username;
+    }
+
+    public void follow(User userToFollow) {
+        if (!isFollowing(userToFollow)) {
+            UserFollower userFollower = new UserFollower(this, userToFollow);
+            followers.add(userFollower);
+            userToFollow.following.add(userFollower);
+        }
+    }
+
+    public void unfollow(User userToUnfollow) {
+        UserFollower userFollower = findUserFollower(userToUnfollow);
+        if (userFollower != null) {
+            followers.remove(userFollower);
+            userToUnfollow.following.remove(userFollower);
+        }
+    }
+
+    public List<UserFollower> getFollowers() {
+        return followers;
+    }
+
+    public List<UserFollower> getFollowing() {
+        return following;
+    }
+
+    public boolean isFollowing(User user) {
+        return findUserFollower(user) != null;
+    }
+
+    private UserFollower findUserFollower(User user) {
+        for (UserFollower userFollower : followers) {
+            if (userFollower.getFollowing().equals(user)) {
+                return userFollower;
+            }
+        }
+        return null;
     }
 }

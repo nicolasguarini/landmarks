@@ -17,14 +17,14 @@ public class UserController {
     private final UserService userService = new UserService();
     private final Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 
-    public String getAllUsers(Request request, Response response){
+    public String getAllUsers(Request request, Response response) {
         response.type("application/json");
 
-        try{
+        try {
             response.status(200);
             List<User> users = userService.getAllUsers();
             return gson.toJson(users);
-        }catch(Exception e){
+        } catch (Exception e) {
             response.status(500);
             e.printStackTrace();
             return "Error in getAllUsers:" + e;
@@ -34,11 +34,11 @@ public class UserController {
     public String getVipUsers(Request request, Response response) {
         response.type("application/json");
 
-        try{
+        try {
             response.status(200);
             List<VipPlanUser> users = userService.getVipUsers();
             return gson.toJson(users);
-        }catch(Exception e){
+        } catch (Exception e) {
             response.status(500);
             e.printStackTrace();
             return "Error:" + e.getMessage();
@@ -48,11 +48,11 @@ public class UserController {
     public String getBasicUsers(Request request, Response response) {
         response.type("application/json");
 
-        try{
+        try {
             response.status(200);
             List<BasicPlanUser> users = userService.getBasicUsers();
             return gson.toJson(users);
-        }catch(Exception e){
+        } catch (Exception e) {
             response.status(500);
             e.printStackTrace();
             return "Error:" + e.getMessage();
@@ -86,11 +86,11 @@ public class UserController {
     public String createUser(Request request, Response response) {
         response.type("application/json");
 
-        try{
+        try {
             String username = request.queryMap("username").value();
             String userType = request.queryMap("type").value();
 
-            if (username == null){
+            if (username == null) {
                 throw new IllegalArgumentException("No username provided");
             }
 
@@ -111,7 +111,7 @@ public class UserController {
                 response.status(400);
                 return "Error creating user";
             }
-        } catch (PersistenceException e){
+        } catch (PersistenceException e) {
             response.status(500);
             return "Error creating user";
         }
@@ -220,4 +220,35 @@ public class UserController {
             return "Error in upgradeUserToVip: " + e;
         }
     }
+
+    /*
+        public String followUser(Request request, Response response) {
+            response.type("application/json");
+
+            try {
+                UUID followerId = UUID.fromString(request.params(":followerId"));
+                UUID followingId = UUID.fromString(request.params(":followingId"));
+
+                User follower = userService.getUserById(followerId);
+                User following = userService.getUserById(followingId);
+
+                if (follower != null && following != null) {
+                    follower.follow(following);
+                    userService.updateUser(follower);
+
+                    response.status(200);
+                    return gson.toJson("User " + followerId + " is now following user " + followingId);
+                } else {
+                    response.status(404);
+                    return "User not found";
+                }
+            } catch (NumberFormatException e) {
+                response.status(400);
+                return "Invalid user ID format";
+            } catch (Exception e) {
+                response.status(500);
+                return "Error in followUser: " + e;
+            }
+        }
+    */
 }
