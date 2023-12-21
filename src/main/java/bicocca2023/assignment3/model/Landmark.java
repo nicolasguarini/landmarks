@@ -9,10 +9,14 @@ import java.util.UUID;
 
 @Entity
 public class Landmark {
+    @Expose
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+
+    @Expose
     private String name;
+
     @Expose
     @ManyToOne
     @JoinColumn(name = "user_id")

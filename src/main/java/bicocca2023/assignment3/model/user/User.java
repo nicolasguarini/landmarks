@@ -4,8 +4,6 @@ import bicocca2023.assignment3.exception.LandmarksLimitException;
 import bicocca2023.assignment3.model.Landmark;
 import com.google.gson.annotations.Expose;
 import jakarta.persistence.*;
-import org.hibernate.annotations.GenericGenerator;
-
 import java.util.*;
 
 @Entity
@@ -13,14 +11,15 @@ import java.util.*;
 @DiscriminatorColumn(name = "user_type")
 @Table(name = "users")
 abstract public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @Expose @Id @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(unique = true)
+    @Expose @Column(name="user_type", insertable = false, updatable = false)
+    private String plan;
+
+    @Expose @Column(unique = true)
     private String username;
 
-    @Expose(serialize = false, deserialize = false)
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<Landmark> landmarks = new ArrayList<>();
 
@@ -49,9 +48,11 @@ abstract public class User {
     public void addLandmark(Landmark landmark) throws LandmarksLimitException {
         landmarks.add(landmark);
     }
+
     public List<Landmark> getLandmarks(){
         return landmarks;
     }
+
     @Override
     public String toString(){
         return "(" + id + ") - " + username;

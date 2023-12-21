@@ -9,13 +9,14 @@ import java.util.*;
 @Entity
 @DiscriminatorValue(value = "BASIC")
 public class BasicPlanUser extends User{
+    private static final int MAX_LANDMARKS = 10;
+
     public BasicPlanUser() {}
+
     public BasicPlanUser(UUID id) {
         setId(id);
     }
 
-   /*
-   private static final int MAX_LANDMARKS = 10;
    @Override
    public void addLandmark(Landmark landmark) throws LandmarksLimitException {
        if(super.getLandmarks().size() >= MAX_LANDMARKS){
@@ -25,9 +26,8 @@ public class BasicPlanUser extends User{
        }
    }
 
-    */
    @Override
-    public String toString(){
-       return "Basic User " + super.toString();
+   public String toString(){
+       return "(Basic) " + super.toString();
    }
 }

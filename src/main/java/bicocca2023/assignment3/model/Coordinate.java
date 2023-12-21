@@ -1,52 +1,58 @@
 package bicocca2023.assignment3.model;
 
+import com.google.gson.annotations.Expose;
 import jakarta.persistence.*;
 
+import java.util.UUID;
+
 @Entity
-
 public class Coordinate {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private Double longitude;
-    private Double latitude;
-    private Double altitude;
+    @Expose
+    @Id @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
-    //set get fjgndf
+    @Expose
+    private Double longitude;
+
+    @Expose
+    private Double latitude;
+
+    @Expose
+    private Double altitude;
 
     @OneToOne
     @JoinColumn(name = "landmark_id")
     private Landmark landmark;
 
-    //=== Set methods ===
-
     public void setLandmark(Landmark landmark) {
         this.landmark = landmark;
     }
+
     public void setLongitude(Double longitude){
         this.longitude = longitude;
     }
+
     public void setLatitude(Double latitude){
         this.latitude = latitude;
     }
+
     public void setAltitude(Double altitude){
         this.altitude = altitude;
     }
 
-    //=== Get methods ===
-
     public Landmark getLandmark() {
         return landmark;
     }
+
     public Double getLongitude(){
         return longitude;
     }
+
     public Double getLatitude(){
         return latitude;
     }
+
     public Double getAltitude(){
         return altitude;
     }
-
-
 }

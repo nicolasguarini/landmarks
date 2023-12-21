@@ -5,6 +5,7 @@ import bicocca2023.assignment3.model.user.User;
 import bicocca2023.assignment3.model.user.VipPlanUser;
 import bicocca2023.assignment3.service.UserService;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import jakarta.persistence.PersistenceException;
 import spark.Request;
 import spark.Response;
@@ -14,7 +15,7 @@ import java.util.UUID;
 
 public class UserController {
     private final UserService userService = new UserService();
-    private final Gson gson = new Gson();
+    private final Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 
     public String getAllUsers(Request request, Response response){
         response.type("application/json");
