@@ -1,6 +1,7 @@
 package bicocca2023.assignment3.model;
 
 import bicocca2023.assignment3.model.user.User;
+import com.google.gson.annotations.Expose;
 import jakarta.persistence.*;
 import jakarta.transaction.Transactional;
 
@@ -12,9 +13,10 @@ public class Landmark {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
     private String name;
+    @Expose
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private  User user;
+    private User user;
 
     public UUID getId(){
         return id;
