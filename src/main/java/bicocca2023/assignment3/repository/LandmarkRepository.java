@@ -3,13 +3,14 @@ package bicocca2023.assignment3.repository;
 import bicocca2023.assignment3.model.Landmark;
 import bicocca2023.assignment3.util.PersistenceManager;
 import jakarta.persistence.EntityManager;
+import jakarta.transaction.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
-
+@Transactional
 public class LandmarkRepository {
-    public LandmarkRepository() {
-    }
+    public LandmarkRepository() {}
 
     public Landmark save(Landmark landmark) {
         try (EntityManager entityManager = PersistenceManager.getEntityManagerFactory().createEntityManager()) {
@@ -24,11 +25,6 @@ public class LandmarkRepository {
         }
     }
 
-    public List<Landmark> findAll() {
-        try (EntityManager entityManager = PersistenceManager.getEntityManagerFactory().createEntityManager()) {
-            return entityManager.createQuery("SELECT l FROM Landmark l", Landmark.class).getResultList();
-        }
-    }
 
     public void delete(UUID id) {
         try (EntityManager entityManager = PersistenceManager.getEntityManagerFactory().createEntityManager()) {
@@ -61,4 +57,18 @@ public class LandmarkRepository {
             return entityManager.find(Landmark.class, id);
         }
     }
+
+    public List<Landmark> findAll() {
+        try (EntityManager entityManager = PersistenceManager.getEntityManagerFactory().createEntityManager()) {
+            entityManager.getTransaction().begin();
+            List<Landmark> landmarks = entityManager.createQuery("SELECT l FROM Landmark l", Landmark.class).getResultList();
+            entityManager.getTransaction().commit();
+            return landmarks;
+        } catch (Exception e) {
+            // Gestire l'eccezione o loggarla
+            e.printStackTrace();
+            return Collections.emptyList(); // o un altro valore di default
+        }
+    }
+
 }

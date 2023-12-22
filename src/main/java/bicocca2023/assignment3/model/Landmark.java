@@ -3,6 +3,7 @@ package bicocca2023.assignment3.model;
 import bicocca2023.assignment3.model.user.User;
 import com.google.gson.annotations.Expose;
 import jakarta.persistence.*;
+import jakarta.transaction.Transactional;
 
 import java.util.UUID;
 
@@ -14,33 +15,28 @@ public class Landmark {
     private UUID id;
 
     @Expose
-    @Column(unique = true)
     private String name;
 
     @Expose
-    @ManyToOne(cascade = CascadeType.DETACH)
+    @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
-    public UUID getId() {
+    public UUID getId(){
         return id;
-    }
-
-    public String getName() {
-        return this.name;
     }
 
     public void setName(String name) {
         this.name = name;
     }
 
-    public User getUser() {
-        return user;
+    public String getName() {
+        return this.name;
     }
 
-    public void setUser(User user) {
-        this.user = user;
-    }
+    public void setUser(User user){ this.user = user; }
+
+    public User getUser() { return user; }
 
 
     /*
@@ -59,6 +55,9 @@ public class Landmark {
         }
     }
     */
+
+
+
 
 
 }

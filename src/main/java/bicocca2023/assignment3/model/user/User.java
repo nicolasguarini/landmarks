@@ -28,11 +28,10 @@ abstract public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-    @Expose
-    @Column(name = "user_type", insertable = false, updatable = false)
+    @Expose @Column(name="user_type", insertable = false, updatable = false)
     private String plan;
-    @Expose
-    @Column(unique = true)
+
+    @Expose @Column(unique = true)
     private String username;
 
     public User() {

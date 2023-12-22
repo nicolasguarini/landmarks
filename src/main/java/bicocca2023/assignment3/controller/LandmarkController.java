@@ -62,11 +62,15 @@ public class LandmarkController {
         try {
             response.status(200);
             List<Landmark> landmarks = landmarkService.getAllLandmarks();
+            // Add logging here
+            System.out.println("Number of landmarks retrieved: " + landmarks.size());
             return gson.toJson(landmarks);
         } catch (Exception e) {
             response.status(500);
             e.printStackTrace();
-            return "Error";
+            // Log the exception message
+            System.err.println("Error in getAllLandmarks: " + e.getMessage());
+            return "Error in getAllLandmarks:" + e;
         }
     }
 

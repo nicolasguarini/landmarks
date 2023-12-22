@@ -36,10 +36,11 @@ public class UserFollowerController {
                 newFollow.setFollower(follower);
                 newFollow.setFollowing(following);
 
-                UserFollower FollowToGson = userFollowerService.addFollow(newFollow);
+                UserFollower followToGson = userFollowerService.addFollow(newFollow);
 
                 response.status(200);
-                return gson.toJson(FollowToGson);
+                System.out.println("FOLLOWTOGSON: " + followToGson);
+                return follower.getUsername() + " has started to follow " + following.getUsername();
             } else {
                 response.status(404);
                 return "UserFollower not found";
