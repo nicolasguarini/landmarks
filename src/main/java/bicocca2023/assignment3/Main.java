@@ -11,7 +11,6 @@ public class Main {
         UserController userController = new UserController();
         LandmarkController landmarkController = new LandmarkController();
 
-
         Spark.initExceptionHandler((e) -> {
             System.out.println("Server init failed.");
             System.exit(100);
@@ -34,20 +33,19 @@ public class Main {
                 Spark.get("", userController::getAllUsers);
                 Spark.get("/:id", userController::getUserById);
                 // ------------------ UPDATE USER ----------------------
-                Spark.put("/:id", userController::updateUser);
+                Spark.patch("/:id", userController::updateUser);
                 // ------------------ UPGRADE USER ----------------------
-                Spark.put("/:id/upgrade", userController::upgradeUserToVip);
+                Spark.patch("/:id/upgrade", userController::upgradeUserToVip);
                 // ------------------ DEMOTE USER ----------------------
-                Spark.put("/:id/demote", userController::demoteUserToBasic);
+                Spark.patch("/:id/demote", userController::demoteUserToBasic);
                 // ------------------ DELETE USER ----------------------
                 Spark.delete("/:id", userController::deleteUser);
+                // --------- CREATE RELATION USER FOLLOW ANOTHER USER -------
                 Spark.post("/follow", userController::followUser);
-
+                // --------- DELETE RELATION USER FOLLOW ANOTHER USER -------
+                Spark.patch("/:followingId/follow/:followerId", userController::unfollowUser);
             });
 
-            // --------- CREATE RELATION USER FOLLOW ANOTHER USER -------
-            // --------- DELETE RELATION USER FOLLOW ANOTHER USER -------
-            // Spark.delete("/:followingId/follow/:followerId", userFollowerController::followUser);
 
             Spark.path("/landmarks", () -> {
                 // --------- GET ALL LANDMARKS -----------

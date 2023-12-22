@@ -13,14 +13,17 @@ public class Landmark {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-
     @Expose
     private String name;
-
     @Expose
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    @Expose
+    @Embedded
+    @Column(nullable = false)
+    private Coordinate coordinate;
 
     public UUID getId(){
         return id;
@@ -34,15 +37,13 @@ public class Landmark {
         return this.name;
     }
 
-    public void setUser(User user){ this.user = user; }
+    public void setUser(User user) {
+        this.user = user;
+    }
 
-    public User getUser() { return user; }
-
-
-    /*
-    @OneToOne(mappedBy = "landmark", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Coordinate coordinate;
-
+    public User getUser() {
+        return user;
+    }
 
     public Coordinate getCoordinate() {
         return coordinate;
@@ -50,14 +51,6 @@ public class Landmark {
 
     public void setCoordinate(Coordinate coordinate) {
         this.coordinate = coordinate;
-        if (coordinate != null) {
-           // coordinate.setLandmark(this);
-        }
     }
-    */
-
-
-
-
-
 }
+

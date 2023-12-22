@@ -1,6 +1,7 @@
 package bicocca2023.assignment3.controller;
 
 import bicocca2023.assignment3.exception.LandmarksLimitException;
+import bicocca2023.assignment3.model.Coordinate;
 import bicocca2023.assignment3.model.Landmark;
 import bicocca2023.assignment3.model.user.User;
 import bicocca2023.assignment3.service.LandmarkService;
@@ -26,16 +27,28 @@ public class LandmarkController {
         try {
             String name = request.queryMap("name").value();
             UUID userId = UUID.fromString(request.queryMap("userid").value());
+            Double latitude = request.queryMap("lat").doubleValue();
+            Double longitude = request.queryMap("long").doubleValue();
+
             User user = userService.getUserById(userId);
 
-            if (name == null) {
-                throw new IllegalArgumentException("No name provided");
+            if (name == null || latitude == null || longitude == null) {
+                throw new IllegalArgumentException("Name, latitude, or longitude not provided");
             } else if (user == null) {
                 throw new IllegalArgumentException("User ID doesn't exist!");
             }
 
             Landmark landmark = new Landmark();
             landmark.setName(name);
+
+            // Creazione dell'oggetto Coordinate e assegnazione dei valori
+            Coordinate coordinate = new Coordinate();
+            coordinate.setLatitude(latitude);
+            coordinate.setLongitude(longitude);
+
+            // Assegnazione delle coordinate all'oggetto Landmark
+            landmark.setCoordinate(coordinate);
+
             landmark.setUser(userService.getUserById(userId));
             user.addLandmark(landmark);
 
@@ -52,7 +65,7 @@ public class LandmarkController {
             return "Error creating landmark [Error: " + e + "]";
         } catch (LandmarksLimitException e) {
             response.status(400);
-            return "User have reached landmarks limit";
+            return "User has reached landmarks limit";
         }
     }
 

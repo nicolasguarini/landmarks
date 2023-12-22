@@ -5,12 +5,8 @@ import jakarta.persistence.*;
 
 import java.util.UUID;
 
-@Entity
+@Embeddable
 public class Coordinate {
-    @Expose
-    @Id @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
-
     @Expose
     private Double longitude;
 
@@ -20,13 +16,6 @@ public class Coordinate {
     @Expose
     private Double altitude;
 
-    @OneToOne
-    @JoinColumn(name = "landmark_id")
-    private Landmark landmark;
-
-    public void setLandmark(Landmark landmark) {
-        this.landmark = landmark;
-    }
 
     public void setLongitude(Double longitude){
         this.longitude = longitude;
@@ -38,10 +27,6 @@ public class Coordinate {
 
     public void setAltitude(Double altitude){
         this.altitude = altitude;
-    }
-
-    public Landmark getLandmark() {
-        return landmark;
     }
 
     public Double getLongitude(){
