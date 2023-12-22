@@ -15,7 +15,6 @@ public class LandmarkService {
 
     public List<Landmark> getAllLandmarks() { return landmarkRepository.findAll(); }
 
-
     public void deleteLandmark(UUID id) {
         landmarkRepository.delete(id);
     }

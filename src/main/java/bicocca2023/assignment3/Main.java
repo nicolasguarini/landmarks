@@ -2,7 +2,6 @@ package bicocca2023.assignment3;
 
 import bicocca2023.assignment3.controller.LandmarkController;
 import bicocca2023.assignment3.controller.UserController;
-import bicocca2023.assignment3.controller.UserFollowerController;
 import bicocca2023.assignment3.util.PersistenceManager;
 import spark.Spark;
 
@@ -11,7 +10,6 @@ public class Main {
         PersistenceManager.initialize();
         UserController userController = new UserController();
         LandmarkController landmarkController = new LandmarkController();
-        UserFollowerController userFollowerController = new UserFollowerController();
 
 
         Spark.initExceptionHandler((e) -> {
@@ -43,7 +41,7 @@ public class Main {
                 Spark.put("/:id/demote", userController::demoteUserToBasic);
                 // ------------------ DELETE USER ----------------------
                 Spark.delete("/:id", userController::deleteUser);
-                Spark.post("/:followingId/follow/:followerId", userFollowerController::followUser);
+                Spark.post("/follow", userController::followUser);
 
             });
 

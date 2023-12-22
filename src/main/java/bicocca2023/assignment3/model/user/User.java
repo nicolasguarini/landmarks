@@ -17,12 +17,16 @@ abstract public class User {
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = {CascadeType.DETACH}, orphanRemoval = true)
     private final List<Landmark> landmarks = new ArrayList<>();
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "follower")
-    private final List<UserFollower> followers = new ArrayList<>();
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "user_followers",
+            joinColumns = @JoinColumn(name = "follower_id"),
+            inverseJoinColumns = @JoinColumn(name = "followed_id")
+    )
+    private final List<User> followers = new ArrayList<>();
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "following")
-    private final List<UserFollower> following = new ArrayList<>();
-
+    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "followers")
+    private final List<User> followedBy = new ArrayList<>();
 
     @Expose
     @Id
@@ -61,6 +65,10 @@ abstract public class User {
         landmarks.add(landmark);
     }
 
+    public boolean isFollowing(User userToCheck) {
+        return followers.contains(userToCheck);
+    }
+
     public List<Landmark> getLandmarks() {
         return landmarks;
     }
@@ -70,40 +78,17 @@ abstract public class User {
         return "(" + id + ") - " + username;
     }
 
-    public void follow(User userToFollow) {
-        if (!isFollowing(userToFollow)) {
-            UserFollower userFollower = new UserFollower(this, userToFollow);
-            followers.add(userFollower);
-            userToFollow.following.add(userFollower);
-        }
+    public void followUser(User user) {
+        followers.add(user);
+        user.followedBy.add(this);
     }
 
-    public void unfollow(User userToUnfollow) {
-        UserFollower userFollower = findUserFollower(userToUnfollow);
-        if (userFollower != null) {
-            followers.remove(userFollower);
-            userToUnfollow.following.remove(userFollower);
-        }
-    }
-
-    public List<UserFollower> getFollowers() {
+    public List<User> getFollowers() {
         return followers;
     }
 
-    public List<UserFollower> getFollowing() {
-        return following;
+    public List<User> getFollowedBy() {
+        return followedBy;
     }
 
-    public boolean isFollowing(User user) {
-        return findUserFollower(user) != null;
-    }
-
-    private UserFollower findUserFollower(User user) {
-        for (UserFollower userFollower : followers) {
-            if (userFollower.getFollowing().equals(user)) {
-                return userFollower;
-            }
-        }
-        return null;
-    }
 }

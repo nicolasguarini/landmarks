@@ -221,7 +221,63 @@ public class UserController {
         }
     }
 
+
+    public Object followUser(Request request, Response response) {
+        response.type("application/json");
+        try{
+            UUID followingID = UUID.fromString(request.queryMap("followingID").value());
+            UUID followerID = UUID.fromString(request.queryMap("followerID").value());
+
+            User followingUser = userService.getUserById(followingID);
+            User followerUser = userService.getUserById(followerID);
+
+            if(followingUser == null || followerUser == null){
+                throw new IllegalArgumentException("No user provided");
+            }
+
+            // Add logic to check if the follower is already following the user
+            if (followerUser.isFollowing(followingUser)) {
+                response.status(400);
+                return "User is already following this user.";
+            }
+
+            followerUser.followUser(followingUser);
+            userService.updateUser(followerUser);
+            response.status(200);
+            return "User with ID " + followerID + " is now following user with ID " + followingID;
+        } catch (Exception e) {
+            response.status(500);
+            return "Error in followUser: " + e.getMessage();
+        }
+    }
+}
     /*
+
+    public String followUser(Request request, Response response) {
+        response.type("application/json");
+
+        try {
+            UUID userId = UUID.fromString(request.params(":id"));
+            User user = userService.getUserById(userId);
+
+            if (user != null) {
+                response.status(200);
+                return gson.toJson(user);
+            } else {
+                response.status(404);
+                return "User not found";
+            }
+        } catch (NumberFormatException e) {
+            response.status(400);
+            return "Invalid user ID format";
+        } catch (Exception e) {
+            response.status(500);
+            return "Error in getUserById: " + e;
+        }
+    }
+}
+
+
         public String followUser(Request request, Response response) {
             response.type("application/json");
 
@@ -251,4 +307,4 @@ public class UserController {
             }
         }
     */
-}
+
