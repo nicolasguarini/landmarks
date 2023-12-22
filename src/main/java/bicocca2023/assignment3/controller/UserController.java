@@ -253,33 +253,34 @@ public class UserController {
 
     public Object unfollowUser(Request request, Response response) {
         response.type("application/json");
-        try{
-            UUID followingID = UUID.fromString(request.queryMap("followingID").value());
-            UUID followerID = UUID.fromString(request.queryMap("followerID").value());
+
+        try {
+            UUID followingID = UUID.fromString(request.params("followingID"));
+            UUID followerID = UUID.fromString(request.params("followerID"));
 
             User followingUser = userService.getUserById(followingID);
             User followerUser = userService.getUserById(followerID);
 
-            if(followingUser == null || followerUser == null){
+            if (followingUser == null || followerUser == null) {
                 throw new IllegalArgumentException("No user provided");
             }
 
-            // Add logic to check if the follower is already following the user
-            if (followerUser.isFollowing(followingUser)) {
+            // Add logic to check if the follower is already not following the user
+            if (!followerUser.isFollowing(followingUser)) {
                 response.status(400);
-                return "User is already following this user.";
+                return "User is not following this user.";
             }
 
-            followerUser.followUser(followingUser);
+            followerUser.unfollowUser(followingUser);
             userService.updateUser(followerUser);
             response.status(200);
-            return "User with ID " + followerID + " is now following user with ID " + followingID;
+            return "User with ID " + followerID + " has unfollowed user with ID " + followingID;
         } catch (Exception e) {
             response.status(500);
-            return "Error in followUser: " + e.getMessage();
+            return "Error in unfollowUser: " + e.getMessage();
         }
-
     }
+
 }
     /*
 

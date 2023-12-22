@@ -83,6 +83,11 @@ abstract public class User {
         user.followedBy.add(this);
     }
 
+    public void unfollowUser(User user) {
+        followers.remove(user);
+        user.followedBy.remove(this);
+    }
+
     public List<User> getFollowers() {
         return followers;
     }
