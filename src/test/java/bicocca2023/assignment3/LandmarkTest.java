@@ -8,14 +8,12 @@ import bicocca2023.assignment3.util.PersistenceManager;
 import org.junit.jupiter.api.*;
 import spark.Spark;
 
-import java.util.HashMap;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 public class LandmarkTest {
     public static String testUsername;
     public static String testId;
-    String baseUrl = "/api/landmarks";
+    public static final String BASE_URL = "/api/landmarks";
 
     @BeforeAll
     public static void setUp() {
@@ -36,6 +34,7 @@ public class LandmarkTest {
     @BeforeEach
     public void createTestUser() {
         ApiTestUtils.TestResponse res = ApiTestUtils.request("POST", "/api/users?username=" + testUsername, null);
+        assertNotNull(res);
         testId = (String) res.json().get("id");
     }
 
@@ -49,45 +48,44 @@ public class LandmarkTest {
 
     @Test
     public void testLandmarkGET() {
-        ApiTestUtils.TestResponse res = ApiTestUtils.request("GET", baseUrl, null);
+        ApiTestUtils.TestResponse res = ApiTestUtils.request("GET", BASE_URL, null);
         assertNotNull(res);
         assertEquals(200, res.status);
     }
 
     @Test
     public void testLandmarkPOST() {
-        String postUrl = baseUrl + "?userid=" + testId + "&lat=100&long=100&name=mylandmark";
+        String postUrl = BASE_URL + "?userid=" + testId + "&lat=100&long=100&name=mylandmark";
         ApiTestUtils.TestResponse res = ApiTestUtils.request("POST", postUrl, null);
-        String landmarkId = (String) res.json().get("id");
 
         assertNotNull(res);
+        String landmarkId = (String) res.json().get("id");
         assertEquals(201, res.status);
 
-        String getUrl = baseUrl + "/" + landmarkId;
+        String getUrl = BASE_URL + "/" + landmarkId;
         res = ApiTestUtils.request("GET", getUrl, null);
 
         assertNotNull(res);
-        HashMap body = res.json();
-        assertEquals("mylandmark", body.get("name"));
-        assertEquals("{longitude=100.0, latitude=100.0}", body.get("coordinate").toString());
+        assertEquals("mylandmark", res.json().get("name"));
+        assertEquals("{longitude=100.0, latitude=100.0}", res.json().get("coordinate").toString());
     }
 
     @Test
     public void testLandmarkDELETE() {
-        String postUrl = baseUrl + "?userid=" + testId + "&lat=100&long=100&name=mylandmark";
+        String postUrl = BASE_URL + "?userid=" + testId + "&lat=100&long=100&name=mylandmark";
         ApiTestUtils.TestResponse res = ApiTestUtils.request("POST", postUrl, null);
-        String landmarkId = (String) res.json().get("id");
 
         assertNotNull(res);
+        String landmarkId = (String) res.json().get("id");
         assertEquals(201, res.status);
 
-        String getUrl = baseUrl + "/" + landmarkId;
+        String getUrl = BASE_URL + "/" + landmarkId;
         res = ApiTestUtils.request("GET", getUrl, null);
 
         assertNotNull(res);
         assertEquals(200, res.status);
 
-        String delUrl = baseUrl + "/" + landmarkId;
+        String delUrl = BASE_URL + "/" + landmarkId;
         res = ApiTestUtils.request("DELETE", delUrl, null);
 
         assertNotNull(res);
@@ -101,11 +99,11 @@ public class LandmarkTest {
 
     @Test
     public void testLandmarkLimit() {
-        String postUrl = baseUrl + "?userid=" + testId + "&lat=100&long=100&name=mylandmark";
+        String postUrl = BASE_URL + "?userid=" + testId + "&lat=100&long=100&name=mylandmark";
         ApiTestUtils.TestResponse res;
 
         for(int i = 0; i < BasicPlanUser.MAX_LANDMARKS; i++)
-            res = ApiTestUtils.request("POST", postUrl, null);
+            ApiTestUtils.request("POST", postUrl, null);
 
         res = ApiTestUtils.request("POST", postUrl, null);
 
