@@ -1,5 +1,7 @@
 package bicocca2023.assignment3.service;
 
+import bicocca2023.assignment3.exception.LandmarksLimitException;
+import bicocca2023.assignment3.model.Landmark;
 import bicocca2023.assignment3.model.user.BasicPlanUser;
 import bicocca2023.assignment3.model.user.User;
 import bicocca2023.assignment3.model.user.VipPlanUser;
@@ -25,7 +27,66 @@ public class UserService {
 
     public User updateUser(User user) { return userRepository.update(user); }
 
-    public User upgradeUserToVip(User user) { return userRepository.upgrade(user); }
+    public User upgradeUserToVip(User user) {
+        LandmarkService landmarkService = new LandmarkService();
 
-    public User demoteUserToBasic(User user) { return userRepository.demote(user); }
+        if(user instanceof BasicPlanUser){
+            VipPlanUser vipUser = new VipPlanUser();
+            vipUser.setUsername(user.getUsername());
+            List<Landmark> landmarks = user.getLandmarks();
+
+            deleteUser(user.getId());
+            createUser(vipUser);
+
+            for(Landmark l : landmarks){
+                Landmark newLandmark = new Landmark();
+                newLandmark.setUser(vipUser);
+                newLandmark.setName(l.getName());
+                newLandmark.setCoordinate(l.getCoordinate());
+
+                try{
+                    vipUser.addLandmark(newLandmark);
+                    landmarkService.createLandmark(newLandmark);
+                }catch(LandmarksLimitException e) {
+                    break;
+                }
+            }
+
+            return vipUser;
+        }
+
+        return user;
+    }
+
+    public User demoteUserToBasic(User user) {
+        LandmarkService landmarkService = new LandmarkService();
+
+        if (user instanceof VipPlanUser) {
+            BasicPlanUser basicUser = new BasicPlanUser();
+            basicUser.setUsername(user.getUsername());
+            List<Landmark> landmarks = user.getLandmarks();
+
+            deleteUser(user.getId());
+            createUser(basicUser);
+
+            for (Landmark l : landmarks) {
+                Landmark newLandmark = new Landmark();
+                newLandmark.setUser(basicUser);
+                newLandmark.setName(l.getName());
+                newLandmark.setCoordinate(l.getCoordinate());
+
+                try {
+                    basicUser.addLandmark(newLandmark);
+                    landmarkService.createLandmark(newLandmark);
+                } catch (LandmarksLimitException e) {
+                    break;
+                }
+            }
+
+            return basicUser;
+        }
+
+        return user;
+    }
+
 }

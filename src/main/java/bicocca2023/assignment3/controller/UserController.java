@@ -180,22 +180,7 @@ public class UserController {
             User existingUser = userService.getUserById(userId);
 
             if (existingUser != null) {
-                //User upgradedUser = userService.upgradeUserToVip(existingUser);
-                VipPlanUser vipUser = new VipPlanUser();
-                vipUser.setUsername(existingUser.getUsername());
-                List<Landmark> lms = existingUser.getLandmarks();
-                userService.deleteUser(existingUser.getId());
-                userService.createUser(vipUser);
-                for(Landmark l : lms){
-                    Landmark newLandmark = new Landmark();
-                    newLandmark.setUser(vipUser);
-                    newLandmark.setName(l.getName());
-                    newLandmark.setCoordinate(l.getCoordinate());
-                    vipUser.addLandmark(newLandmark);
-                    landmarkService.createLandmark(newLandmark);
-                }
-                System.out.println("VIPUSER LANDMARK" + vipUser.getLandmarks());
-
+                VipPlanUser vipUser = (VipPlanUser) userService.upgradeUserToVip(existingUser);
 
                 response.status(200);
                 return gson.toJson(vipUser);

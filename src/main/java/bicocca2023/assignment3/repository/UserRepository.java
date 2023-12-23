@@ -76,46 +76,6 @@ public class UserRepository {
         }
     }
 
-    public User upgrade(User user) {
-        try (EntityManager entityManager = PersistenceManager.getEntityManagerFactory().createEntityManager()) {
-            entityManager.getTransaction().begin();
-
-            if (user instanceof BasicPlanUser) {
-                List<Landmark> userLandmarks = user.getLandmarks();
-                System.out.println("PIPPO " + userLandmarks.size());
-                String username = user.getUsername();
-                System.out.println("PIPPO " + username);
-
-                VipPlanUser vipUser = new VipPlanUser();
-                vipUser.setUsername(username);
-
-                for(Landmark l : userLandmarks){
-                    Landmark newLandmark = new Landmark();
-                    newLandmark.setUser(vipUser);
-                    newLandmark.setName(l.getName());
-                    newLandmark.setCoordinate(l.getCoordinate());
-                    vipUser.addLandmark(newLandmark);
-
-                }
-
-                System.out.println("PIPPO ecco quanti landmarks ci sono " + vipUser.getLandmarks().size()); // -> 1
-
-                delete(user.getId());
-
-                System.out.println("PIPPO ecco quanti landmarks ci sono dopo aver cancellato user " + vipUser.getLandmarks().size()); // -> 1
-                save(vipUser);
-                entityManager.getTransaction().commit();
-                return vipUser;
-            }
-
-            entityManager.getTransaction().commit();
-        } catch (LandmarksLimitException e) {
-            throw new RuntimeException(e);
-        }
-
-        return user;
-    }
-
     public User demote(User user) {
         try (EntityManager entityManager = PersistenceManager.getEntityManagerFactory().createEntityManager()) {
             entityManager.getTransaction().begin();
