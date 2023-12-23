@@ -80,14 +80,17 @@ public class UserRepository {
 
             if (user instanceof BasicPlanUser) {
                 delete(user.getId());
-                VipPlanUser vipUser = new VipPlanUser(user.getId());
+                VipPlanUser vipUser = new VipPlanUser();
                 vipUser.setUsername(user.getUsername());
                 save(vipUser);
+                entityManager.getTransaction().commit();
+                return vipUser;
             }
 
             entityManager.getTransaction().commit();
-            return user;
         }
+
+        return user;
     }
 
     public User demote(User user) {
@@ -96,9 +99,11 @@ public class UserRepository {
 
             if (user instanceof VipPlanUser) {
                 delete(user.getId());
-                BasicPlanUser basicUser = new BasicPlanUser(user.getId());
+                BasicPlanUser basicUser = new BasicPlanUser();
                 basicUser.setUsername(user.getUsername());
                 save(basicUser);
+                entityManager.getTransaction().commit();
+                return basicUser;
             }
 
             entityManager.getTransaction().commit();
