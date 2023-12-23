@@ -4,6 +4,7 @@ import bicocca2023.assignment3.model.Landmark;
 import bicocca2023.assignment3.model.user.BasicPlanUser;
 import bicocca2023.assignment3.model.user.User;
 import bicocca2023.assignment3.model.user.VipPlanUser;
+import bicocca2023.assignment3.service.LandmarkService;
 import bicocca2023.assignment3.service.UserService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -16,6 +17,7 @@ import java.util.UUID;
 
 public class UserController {
     private final UserService userService = new UserService();
+    private final LandmarkService landmarkService = new LandmarkService();
     private final Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 
     public String getAllUsers(Request request, Response response) {
@@ -179,19 +181,21 @@ public class UserController {
 
             if (existingUser != null) {
                 //User upgradedUser = userService.upgradeUserToVip(existingUser);
-                User vipUser = new VipPlanUser();
+                VipPlanUser vipUser = new VipPlanUser();
                 vipUser.setUsername(existingUser.getUsername());
                 List<Landmark> lms = existingUser.getLandmarks();
+                userService.deleteUser(existingUser.getId());
+                userService.createUser(vipUser);
                 for(Landmark l : lms){
                     Landmark newLandmark = new Landmark();
                     newLandmark.setUser(vipUser);
                     newLandmark.setName(l.getName());
                     newLandmark.setCoordinate(l.getCoordinate());
                     vipUser.addLandmark(newLandmark);
+                    landmarkService.createLandmark(newLandmark);
                 }
+                System.out.println("VIPUSER LANDMARK" + vipUser.getLandmarks());
 
-                userService.deleteUser(existingUser.getId());
-                userService.createUser(vipUser);
 
                 response.status(200);
                 return gson.toJson(vipUser);
