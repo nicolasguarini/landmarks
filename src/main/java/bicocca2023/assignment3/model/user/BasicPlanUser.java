@@ -14,7 +14,7 @@ public class BasicPlanUser extends User{
     public BasicPlanUser() {}
 
     public BasicPlanUser(UUID id) {
-        setId(id);
+        super.setId(id);
     }
 
    @Override

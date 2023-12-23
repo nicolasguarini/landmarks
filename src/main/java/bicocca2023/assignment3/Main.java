@@ -21,47 +21,9 @@ public class Main {
         System.out.println("Server is running on port 8000...");
 
         // DEFINED PATHS FOR USERS API
+        Routes.establishUserRoutes(userController);
+        Routes.establishLandmarkRoutes(landmarkController);
 
-        Spark.path("/api", () -> {
-            Spark.path("/users", () -> {
-                // --------------- CREATE USER  ------------------------
-                Spark.post("", userController::createUser);
-                // ------------- GET USERS BY PLAN ---------------------
-                Spark.get("/vip", userController::getVipUsers);
-                Spark.get("/basic", userController::getBasicUsers);
-                // ----------- GET USERS IN GENERAL OR BY ID------------
-                Spark.get("", userController::getAllUsers);
-                Spark.get("/:id", userController::getUserById);
-                // ------------------ UPDATE USER ----------------------
-                Spark.patch("/:id", userController::updateUser);
-                // ------------------ UPGRADE USER ----------------------
-                Spark.patch("/:id/upgrade", userController::upgradeUserToVip);
-                // ------------------ DEMOTE USER ----------------------
-                Spark.patch("/:id/demote", userController::demoteUserToBasic);
-                // ------------------ DELETE USER ----------------------
-                Spark.delete("/:id", userController::deleteUser);
-                // --------- CREATE RELATION USER FOLLOW ANOTHER USER -------
-                Spark.post("/follow", userController::followUser);
-                // --------- DELETE RELATION USER FOLLOW ANOTHER USER -------
-                Spark.patch("/:followingId/follow/:followerId", userController::unfollowUser);
-            });
-
-
-            Spark.path("/landmarks", () -> {
-                // --------- GET ALL LANDMARKS -----------
-                Spark.get("", landmarkController::getAllLandmarks);
-                // --------- CREATE LANDMARK -----------
-                Spark.post("", landmarkController::createLandmark);
-                // --------- CREATE LANDMARK BY ID -----------
-                Spark.get("/:id", landmarkController::getLandmarkById);
-                // -------    DELETE LANDMARK -----------
-                Spark.delete("/:id", landmarkController::deleteLandmark);
-                // -------    UPDATE LANDMARK -----------
-                //Spark.put("/:id", landmarkController::updateLandMark);
-
-            });
-
-            Spark.awaitStop();
-        });
+        Spark.awaitStop();
     }
 }

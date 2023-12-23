@@ -38,8 +38,7 @@ abstract public class User {
     @Expose @Column(unique = true)
     private String username;
 
-    public User() {
-    }
+    public User() {}
 
     public User(String username) {
         this.username = username;
