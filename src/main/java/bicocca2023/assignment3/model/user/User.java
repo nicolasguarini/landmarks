@@ -15,7 +15,7 @@ import java.util.UUID;
 @Table(name = "users")
 abstract public class User {
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = {CascadeType.DETACH}, orphanRemoval = true)
-    private final List<Landmark> landmarks = new ArrayList<>();
+    private List<Landmark> landmarks = new ArrayList<>();
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
@@ -71,6 +71,8 @@ abstract public class User {
     public List<Landmark> getLandmarks() {
         return landmarks;
     }
+
+    public void setLandmarks(List<Landmark> landmarks) { this.landmarks = landmarks; }
 
     @Override
     public String toString() {

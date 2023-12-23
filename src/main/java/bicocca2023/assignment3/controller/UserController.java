@@ -1,5 +1,6 @@
 package bicocca2023.assignment3.controller;
 
+import bicocca2023.assignment3.model.Landmark;
 import bicocca2023.assignment3.model.user.BasicPlanUser;
 import bicocca2023.assignment3.model.user.User;
 import bicocca2023.assignment3.model.user.VipPlanUser;
@@ -177,10 +178,23 @@ public class UserController {
             User existingUser = userService.getUserById(userId);
 
             if (existingUser != null) {
-                User upgradedUser = userService.upgradeUserToVip(existingUser);
+                //User upgradedUser = userService.upgradeUserToVip(existingUser);
+                User vipUser = new VipPlanUser();
+                vipUser.setUsername(existingUser.getUsername());
+                List<Landmark> lms = existingUser.getLandmarks();
+                for(Landmark l : lms){
+                    Landmark newLandmark = new Landmark();
+                    newLandmark.setUser(vipUser);
+                    newLandmark.setName(l.getName());
+                    newLandmark.setCoordinate(l.getCoordinate());
+                    vipUser.addLandmark(newLandmark);
+                }
+
+                userService.deleteUser(existingUser.getId());
+                userService.createUser(vipUser);
 
                 response.status(200);
-                return gson.toJson(upgradedUser);
+                return gson.toJson(vipUser);
             } else {
                 response.status(404);
                 return "User not found or not eligible for upgrade";

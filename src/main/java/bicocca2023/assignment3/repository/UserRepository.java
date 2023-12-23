@@ -1,5 +1,7 @@
 package bicocca2023.assignment3.repository;
 
+import bicocca2023.assignment3.exception.LandmarksLimitException;
+import bicocca2023.assignment3.model.Landmark;
 import bicocca2023.assignment3.model.user.BasicPlanUser;
 import bicocca2023.assignment3.model.user.User;
 import bicocca2023.assignment3.model.user.VipPlanUser;
@@ -79,15 +81,36 @@ public class UserRepository {
             entityManager.getTransaction().begin();
 
             if (user instanceof BasicPlanUser) {
-                delete(user.getId());
+                List<Landmark> userLandmarks = user.getLandmarks();
+                System.out.println("PIPPO " + userLandmarks.size());
+                String username = user.getUsername();
+                System.out.println("PIPPO " + username);
+
                 VipPlanUser vipUser = new VipPlanUser();
-                vipUser.setUsername(user.getUsername());
+                vipUser.setUsername(username);
+
+                for(Landmark l : userLandmarks){
+                    Landmark newLandmark = new Landmark();
+                    newLandmark.setUser(vipUser);
+                    newLandmark.setName(l.getName());
+                    newLandmark.setCoordinate(l.getCoordinate());
+                    vipUser.addLandmark(newLandmark);
+
+                }
+
+                System.out.println("PIPPO ecco quanti landmarks ci sono " + vipUser.getLandmarks().size()); // -> 1
+
+                delete(user.getId());
+
+                System.out.println("PIPPO ecco quanti landmarks ci sono dopo aver cancellato user " + vipUser.getLandmarks().size()); // -> 1
                 save(vipUser);
                 entityManager.getTransaction().commit();
                 return vipUser;
             }
 
             entityManager.getTransaction().commit();
+        } catch (LandmarksLimitException e) {
+            throw new RuntimeException(e);
         }
 
         return user;
