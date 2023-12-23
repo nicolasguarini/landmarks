@@ -9,7 +9,7 @@ import java.util.*;
 @Entity
 @DiscriminatorValue(value = "BASIC")
 public class BasicPlanUser extends User{
-    private static final int MAX_LANDMARKS = 10;
+    public static final int MAX_LANDMARKS = 10;
 
     public BasicPlanUser() {}
 

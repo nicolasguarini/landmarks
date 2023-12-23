@@ -87,7 +87,7 @@ public class LandmarkController {
         }
     }
 
-    public Object deleteLandmark(Request request, Response response) {
+    public String deleteLandmark(Request request, Response response) {
         try {
             UUID landmarkId = UUID.fromString(request.params(":id"));
             landmarkService.deleteLandmark(landmarkId);
@@ -101,7 +101,7 @@ public class LandmarkController {
         }
     }
 
-    public Object getLandmarkById(Request request, Response response) {
+    public String getLandmarkById(Request request, Response response) {
         response.type("application/json");
         try {
             UUID landmarkId = UUID.fromString(request.params(":id"));

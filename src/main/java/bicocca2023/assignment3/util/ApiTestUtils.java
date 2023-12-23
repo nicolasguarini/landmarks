@@ -18,7 +18,11 @@ public class ApiTestUtils {
             connection.setRequestMethod(method);
             connection.setDoOutput(true);
             connection.connect();
-            String body = IOUtils.toString(connection.getInputStream());
+            String body;
+
+            try{ body = IOUtils.toString(connection.getInputStream()); }
+            catch(IOException e) { body = ""; }
+
             return new TestResponse(connection.getResponseCode(), body);
         } catch (IOException e) {
             e.printStackTrace();
