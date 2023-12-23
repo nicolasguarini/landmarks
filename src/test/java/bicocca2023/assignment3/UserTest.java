@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class UserTest {
-
+    private static final String BASE_URL = "/api/users";
     public static String testUsername;
     public static String testId;
 
@@ -35,15 +35,14 @@ public class UserTest {
     @AfterEach
     public void deleteTestUser() {
         if (testId != null) {
-            ApiTestUtils.request("DELETE", "/api/users/" + testId, null);
+            ApiTestUtils.request("DELETE", BASE_URL + "/" + testId, null);
             testId = null;
         }
     }
 
     @Test
     public void testUsersGET() {
-        String testUrl = "/api/users";
-        ApiTestUtils.TestResponse res = ApiTestUtils.request("GET", testUrl, null);
+        ApiTestUtils.TestResponse res = ApiTestUtils.request("GET", BASE_URL, null);
 
         assertNotNull(res);
         assertEquals(200, res.status);
@@ -51,8 +50,8 @@ public class UserTest {
 
     @Test
     public void testUserPOST() {
-        String testPostUrl = "/api/users?username=" + testUsername;
-        String testGetUrl = "/api/users/";
+        String testPostUrl = BASE_URL + "?username=" + testUsername;
+        String testGetUrl = BASE_URL + "/";
 
         ApiTestUtils.TestResponse resPost = ApiTestUtils.request("POST", testPostUrl, null);
 
@@ -71,8 +70,8 @@ public class UserTest {
 
     @Test
     public void testVipUserPOST() {
-        String testPostUrl = "/api/users?username=" + testUsername + "&type=VIP";
-        String testGetUrl = "/api/users/";
+        String testPostUrl = BASE_URL + "?username=" + testUsername + "&type=VIP";
+        String testGetUrl = BASE_URL + "/";
 
         ApiTestUtils.TestResponse resPost = ApiTestUtils.request("POST", testPostUrl, null);
         assertNotNull(resPost);
@@ -89,10 +88,31 @@ public class UserTest {
     }
 
     @Test
+    public void testUserUpgrade() {
+        String testPostUrl = BASE_URL + "?username=" + testUsername;
+        String testPutUrl = BASE_URL + "/";
+        String testGetUrl = BASE_URL + "/";
+        ApiTestUtils.TestResponse res = ApiTestUtils.request("POST", testPostUrl, null);
+
+        assertNotNull(res);
+        testId = (String) res.json().get("id");
+        testPutUrl += testId + "/upgrade";
+        res = ApiTestUtils.request("PUT", testPutUrl, null);
+
+        assertNotNull(res);
+        testId = (String) res.json().get("id");
+        testGetUrl += testId;
+        res = ApiTestUtils.request("GET", testGetUrl, null);
+
+        assertNotNull(res);
+        assertEquals("VIP", res.json().get("plan"));
+    }
+
+    @Test
     public void testUserUpdate() {
-        String testPostUrl = "/api/users?username=" + testUsername;
-        String testPutUrl = "/api/users/";
-        String testGetUrl = "/api/users/";
+        String testPostUrl = BASE_URL + "?username=" + testUsername;
+        String testPutUrl = BASE_URL + "/";
+        String testGetUrl = BASE_URL + "/";
 
         ApiTestUtils.TestResponse resPost = ApiTestUtils.request("POST", testPostUrl, null);
 
