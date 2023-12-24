@@ -243,9 +243,7 @@ public class UserController {
                 return gson.toJson("User is already following this user.");
             }
 
-            user.followUser(userToFollow);
-            userService.updateUser(user);
-            userService.updateUser(userToFollow);
+            userService.followUser(user, userToFollow);
             response.status(200);
             return gson.toJson("User " + user.getUsername() + " is now following user " + userToFollow.getUsername());
         } catch (Exception e) {
@@ -268,9 +266,12 @@ public class UserController {
                 throw new IllegalArgumentException("No user provided");
             }
 
-            user.unfollowUser(userToUnfollow);
-            userService.updateUser(user);
-            userService.updateUser(userToUnfollow);
+            if (!user.isFollowing(userToUnfollow)) {
+                response.status(400);
+                return gson.toJson("User " + user.getUsername() + " is not following user " + userToUnfollow.getUsername());
+            }
+
+            userService.unfollowUser(user, userToUnfollow);
             response.status(200);
             return gson.toJson("User " + user.getUsername() + " has unfollowed user " + userToUnfollow.getUsername());
         } catch (Exception e) {

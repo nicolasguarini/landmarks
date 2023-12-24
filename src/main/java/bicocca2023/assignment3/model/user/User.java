@@ -5,9 +5,7 @@ import bicocca2023.assignment3.model.Landmark;
 import com.google.gson.annotations.Expose;
 import jakarta.persistence.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
@@ -17,16 +15,16 @@ abstract public class User {
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = {CascadeType.DETACH}, orphanRemoval = true)
     private List<Landmark> landmarks = new ArrayList<>();
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(
             name = "user_followers",
             joinColumns = @JoinColumn(name = "follower_id"),
             inverseJoinColumns = @JoinColumn(name = "followed_id")
     )
-    private final List<User> following = new ArrayList<>();
+    private final Set<User> following = new HashSet<>();
 
-    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "following")
-    private final List<User> followers = new ArrayList<>();
+    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "following", cascade = CascadeType.ALL)
+    private final Set<User> followers = new HashSet<>();
 
     @Expose
     @Id
@@ -87,9 +85,9 @@ abstract public class User {
         user.removeFollower(this);
     }
 
-    public List<User> getFollowers() { return followers; }
+    public Set<User> getFollowers() { return followers; }
 
-    public List<User> getFollowings() { return following; }
+    public Set<User> getFollowings() { return following; }
 
     public void addFollower(User user) { followers.add(user); }
 
@@ -98,4 +96,18 @@ abstract public class User {
     public void removeFollower(User user) { followers.remove(user); }
 
     public void removeFollowing(User user) { following.remove(user); }
+
+    @Override
+    public boolean equals(Object o){
+        if(this == o) return true;
+
+        if(!(o instanceof User)) return false;
+
+        User user = (User) o;
+
+        return id != null && id.equals(user.getId());
+    }
+
+    @Override
+    public int hashCode() { return getClass().hashCode(); }
 }

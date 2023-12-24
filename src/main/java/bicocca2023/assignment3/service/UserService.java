@@ -27,6 +27,16 @@ public class UserService {
 
     public User updateUser(User user) { return userRepository.update(user); }
 
+    public void followUser(User user, User userToFollow) {
+        user.followUser(userToFollow);
+        this.updateUser(user);
+    }
+
+    public void unfollowUser(User user, User userToUnfollow) {
+        user.unfollowUser(userToUnfollow);
+        this.updateUser(user);
+    }
+
     public User upgradeUserToVip(User user) {
         LandmarkService landmarkService = new LandmarkService();
 
