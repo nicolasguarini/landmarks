@@ -23,10 +23,10 @@ abstract public class User {
             joinColumns = @JoinColumn(name = "follower_id"),
             inverseJoinColumns = @JoinColumn(name = "followed_id")
     )
-    private final List<User> followers = new ArrayList<>();
+    private final List<User> following = new ArrayList<>();
 
-    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "followers")
-    private final List<User> followedBy = new ArrayList<>();
+    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "following")
+    private final List<User> followers = new ArrayList<>();
 
     @Expose
     @Id
@@ -64,15 +64,13 @@ abstract public class User {
         landmarks.add(landmark);
     }
 
-    public boolean isFollowing(User userToCheck) {
-        return followers.contains(userToCheck);
-    }
-
     public List<Landmark> getLandmarks() {
         return landmarks;
     }
 
-    public void setLandmarks(List<Landmark> landmarks) { this.landmarks = landmarks; }
+    public boolean isFollowing(User userToCheck) {
+        return following.contains(userToCheck);
+    }
 
     @Override
     public String toString() {
@@ -80,21 +78,24 @@ abstract public class User {
     }
 
     public void followUser(User user) {
-        followers.add(user);
-        user.followedBy.add(this);
+        this.addFollowing(user);
+        user.addFollower(this);
     }
 
     public void unfollowUser(User user) {
-        followers.remove(user);
-        user.followedBy.remove(this);
+        this.removeFollowing(user);
+        user.removeFollower(this);
     }
 
-    public List<User> getFollowers() {
-        return followers;
-    }
+    public List<User> getFollowers() { return followers; }
 
-    public List<User> getFollowedBy() {
-        return followedBy;
-    }
+    public List<User> getFollowings() { return following; }
 
+    public void addFollower(User user) { followers.add(user); }
+
+    public void addFollowing(User user){ this.following.add(user); }
+
+    public void removeFollower(User user) { followers.remove(user); }
+
+    public void removeFollowing(User user) { following.remove(user); }
 }

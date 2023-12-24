@@ -228,29 +228,29 @@ public class UserController {
     public Object followUser(Request request, Response response) {
         response.type("application/json");
         try{
-            UUID followingID = UUID.fromString(request.queryMap("followingID").value());
-            UUID followerID = UUID.fromString(request.queryMap("followerID").value());
+            UUID userId = UUID.fromString(request.params("id"));
+            UUID userToFollowId = UUID.fromString(request.params("idToFollow"));
 
-            User followingUser = userService.getUserById(followingID);
-            User followerUser = userService.getUserById(followerID);
+            User user = userService.getUserById(userId);
+            User userToFollow = userService.getUserById(userToFollowId);
 
-            if(followingUser == null || followerUser == null){
+            if(user == null || userToFollow == null){
                 throw new IllegalArgumentException("No user provided");
             }
 
-            // Add logic to check if the follower is already following the user
-            if (followerUser.isFollowing(followingUser)) {
+            if (user.isFollowing(userToFollow)) {
                 response.status(400);
-                return "User is already following this user.";
+                return gson.toJson("User is already following this user.");
             }
 
-            followerUser.followUser(followingUser);
-            userService.updateUser(followerUser);
+            user.followUser(userToFollow);
+            userService.updateUser(user);
+            userService.updateUser(userToFollow);
             response.status(200);
-            return "User with ID " + followerID + " is now following user with ID " + followingID;
+            return gson.toJson("User " + user.getUsername() + " is now following user " + userToFollow.getUsername());
         } catch (Exception e) {
             response.status(500);
-            return "Error in followUser: " + e.getMessage();
+            return gson.toJson("Error in followUser: " + e.getMessage());
         }
     }
 
@@ -258,87 +258,42 @@ public class UserController {
         response.type("application/json");
 
         try {
-            UUID followingID = UUID.fromString(request.params("followingID"));
-            UUID followerID = UUID.fromString(request.params("followerID"));
+            UUID userId = UUID.fromString(request.params("id"));
+            UUID userToUnfollowId = UUID.fromString(request.params("idToUnfollow"));
 
-            User followingUser = userService.getUserById(followingID);
-            User followerUser = userService.getUserById(followerID);
+            User user = userService.getUserById(userId);
+            User userToUnfollow = userService.getUserById(userToUnfollowId);
 
-            if (followingUser == null || followerUser == null) {
+            if (user == null || userToUnfollow == null) {
                 throw new IllegalArgumentException("No user provided");
             }
 
-            // Add logic to check if the follower is already not following the user
-            if (!followerUser.isFollowing(followingUser)) {
-                response.status(400);
-                return "User is not following this user.";
-            }
-
-            followerUser.unfollowUser(followingUser);
-            userService.updateUser(followerUser);
+            user.unfollowUser(userToUnfollow);
+            userService.updateUser(user);
+            userService.updateUser(userToUnfollow);
             response.status(200);
-            return "User with ID " + followerID + " has unfollowed user with ID " + followingID;
+            return gson.toJson("User " + user.getUsername() + " has unfollowed user " + userToUnfollow.getUsername());
         } catch (Exception e) {
             response.status(500);
-            return "Error in unfollowUser: " + e.getMessage();
+            return gson.toJson("Error in unfollowUser: " + e.getMessage());
         }
     }
 
-}
-    /*
-
-    public String followUser(Request request, Response response) {
+    public String getFollowersById(Request request, Response response) {
         response.type("application/json");
 
-        try {
-            UUID userId = UUID.fromString(request.params(":id"));
-            User user = userService.getUserById(userId);
+        UUID userId = UUID.fromString(request.params("id"));
+        User user = userService.getUserById(userId);
+        return gson.toJson(user.getFollowers());
+    }
 
-            if (user != null) {
-                response.status(200);
-                return gson.toJson(user);
-            } else {
-                response.status(404);
-                return "User not found";
-            }
-        } catch (NumberFormatException e) {
-            response.status(400);
-            return "Invalid user ID format";
-        } catch (Exception e) {
-            response.status(500);
-            return "Error in getUserById: " + e;
-        }
+    public String getFollowingsById(Request request, Response response) {
+        response.type("application/json");
+
+        UUID userId = UUID.fromString(request.params("id"));
+        User user = userService.getUserById(userId);
+        return gson.toJson(user.getFollowings());
     }
 }
 
-
-        public String followUser(Request request, Response response) {
-            response.type("application/json");
-
-            try {
-                UUID followerId = UUID.fromString(request.params(":followerId"));
-                UUID followingId = UUID.fromString(request.params(":followingId"));
-
-                User follower = userService.getUserById(followerId);
-                User following = userService.getUserById(followingId);
-
-                if (follower != null && following != null) {
-                    follower.follow(following);
-                    userService.updateUser(follower);
-
-                    response.status(200);
-                    return gson.toJson("User " + followerId + " is now following user " + followingId);
-                } else {
-                    response.status(404);
-                    return "User not found";
-                }
-            } catch (NumberFormatException e) {
-                response.status(400);
-                return "Invalid user ID format";
-            } catch (Exception e) {
-                response.status(500);
-                return "Error in followUser: " + e;
-            }
-        }
-    */
 

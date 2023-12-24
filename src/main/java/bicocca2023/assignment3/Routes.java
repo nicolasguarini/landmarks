@@ -24,10 +24,15 @@ public class Routes {
                 Spark.put("/:id/demote", userController::demoteUserToBasic);
                 // ------------------ DELETE USER ----------------------
                 Spark.delete("/:id", userController::deleteUser);
-                // --------- CREATE RELATION USER FOLLOW ANOTHER USER -------
-                Spark.post("/follow", userController::followUser);
-                // --------- DELETE RELATION USER FOLLOW ANOTHER USER -------
-                Spark.patch("/:followingId/follow/:followerId", userController::unfollowUser);
+
+                //  ------------------ FOLLOW / UNFOLLOW USER ----------------------
+                Spark.post("/:id/follow/:idToFollow", userController::followUser);
+
+                Spark.patch("/:id/unfollow/:idToUnfollow", userController::unfollowUser);
+
+                Spark.get("/:id/followers", userController::getFollowersById);
+
+                Spark.get("/:id/followings", userController::getFollowingsById);
             });
         });
     }
