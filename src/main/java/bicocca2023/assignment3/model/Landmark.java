@@ -3,7 +3,6 @@ package bicocca2023.assignment3.model;
 import bicocca2023.assignment3.model.user.User;
 import com.google.gson.annotations.Expose;
 import jakarta.persistence.*;
-import jakarta.transaction.Transactional;
 
 import java.util.UUID;
 

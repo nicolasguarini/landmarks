@@ -18,7 +18,6 @@ import java.util.UUID;
 public class LandmarkController {
     private final LandmarkService landmarkService = new LandmarkService();
     private final UserService userService = new UserService();
-
     private final Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 
     public String createLandmark(Request request, Response response) {
@@ -41,12 +40,10 @@ public class LandmarkController {
             Landmark landmark = new Landmark();
             landmark.setName(name);
 
-            // Creazione dell'oggetto Coordinate e assegnazione dei valori
             Coordinate coordinate = new Coordinate();
             coordinate.setLatitude(latitude);
             coordinate.setLongitude(longitude);
 
-            // Assegnazione delle coordinate all'oggetto Landmark
             landmark.setCoordinate(coordinate);
 
             landmark.setUser(userService.getUserById(userId));
@@ -58,14 +55,14 @@ public class LandmarkController {
                 return gson.toJson(createdLandmark);
             } else {
                 response.status(400);
-                return "Error creating landmark";
+                return gson.toJson("Error creating landmark");
             }
         } catch (PersistenceException e) {
             response.status(500);
-            return "Error creating landmark [Error: " + e + "]";
+            return gson.toJson("Error creating landmark [Error: " + e + "]");
         } catch (LandmarksLimitException e) {
             response.status(400);
-            return "User has reached landmarks limit";
+            return gson.toJson("User has reached landmarks limit");
         }
     }
 
@@ -75,15 +72,11 @@ public class LandmarkController {
         try {
             response.status(200);
             List<Landmark> landmarks = landmarkService.getAllLandmarks();
-            // Add logging here
             System.out.println("Number of landmarks retrieved: " + landmarks.size());
             return gson.toJson(landmarks);
         } catch (Exception e) {
             response.status(500);
-            e.printStackTrace();
-            // Log the exception message
-            System.err.println("Error in getAllLandmarks: " + e.getMessage());
-            return "Error in getAllLandmarks:" + e;
+            return gson.toJson("Error in getAllLandmarks:" + e.getMessage());
         }
     }
 
@@ -96,8 +89,7 @@ public class LandmarkController {
 
         } catch (Exception e) {
             response.status(500);
-            return "Error in deleteLandmark: " + e.getMessage();
-
+            return gson.toJson( "Error in deleteLandmark: " + e.getMessage());
         }
     }
 
@@ -118,9 +110,8 @@ public class LandmarkController {
             response.status(400);
             return "Invalid user ID format";
         } catch (Exception e) {
-            e.printStackTrace();
             response.status(500);
-            return "Error in getUserById: " + e;
+            return gson.toJson("Error in getUserById: " + e.getMessage());
         }
     }
 

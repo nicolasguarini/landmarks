@@ -3,8 +3,6 @@ package bicocca2023.assignment3.model;
 import com.google.gson.annotations.Expose;
 import jakarta.persistence.*;
 
-import java.util.UUID;
-
 @Embeddable
 public class Coordinate {
     @Expose
@@ -17,7 +15,6 @@ public class Coordinate {
 
     @Expose
     private Double altitude;
-
 
     public void setLongitude(Double longitude){
         this.longitude = longitude;

@@ -20,7 +20,6 @@ public class Main {
         Spark.init();
         System.out.println("Server is running on port 8000...");
 
-        // DEFINED PATHS FOR USERS API
         Routes.establishUserRoutes(userController);
         Routes.establishLandmarkRoutes(landmarkController);
 

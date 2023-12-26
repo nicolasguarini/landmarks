@@ -27,8 +27,7 @@ public class ApiTestUtils {
 
             return new TestResponse(connection.getResponseCode(), body);
         } catch (IOException e) {
-            e.printStackTrace();
-            System.out.println("Sending request failed: " + e.getMessage());
+            System.err.println("Sending request failed: " + e.getMessage());
             return null;
         }
     }
@@ -43,7 +42,7 @@ public class ApiTestUtils {
             this.body = body;
         }
 
-        public HashMap json() {
+        public HashMap<?,?> json() {
             return new Gson().fromJson(body, HashMap.class);
         }
 

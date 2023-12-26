@@ -33,7 +33,6 @@ public class LandmarkRepository {
                 Landmark landmark = entityManager.find(Landmark.class, id);
 
                 if (landmark != null) {
-                    System.out.println("RIMOSSO:" + landmark.getId());
                     entityManager.remove(landmark);
                 } else {
                     System.err.println("Landmark not found for ID: " + id);
@@ -41,8 +40,8 @@ public class LandmarkRepository {
 
                 entityManager.getTransaction().commit();
             } catch (Exception e) {
-                System.err.println("Error in LandmarkRepository");
-                e.printStackTrace(); // Log the exception stack trace for debugging
+                System.err.println("Error: " + e.getMessage());
+
                 if (entityManager.getTransaction().isActive()) {
                     entityManager.getTransaction().rollback();
                 }
@@ -76,8 +75,8 @@ public class LandmarkRepository {
             entityManager.getTransaction().commit();
             return landmarks;
         } catch (Exception e) {
-            e.printStackTrace();
-            return Collections.emptyList(); // o un altro valore di default
+            System.err.println();
+            return Collections.emptyList();
         }
     }
 }

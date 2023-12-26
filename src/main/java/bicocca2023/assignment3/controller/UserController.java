@@ -3,7 +3,6 @@ package bicocca2023.assignment3.controller;
 import bicocca2023.assignment3.model.user.BasicPlanUser;
 import bicocca2023.assignment3.model.user.User;
 import bicocca2023.assignment3.model.user.VipPlanUser;
-import bicocca2023.assignment3.service.LandmarkService;
 import bicocca2023.assignment3.service.UserService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -27,8 +26,7 @@ public class UserController {
             return gson.toJson(users);
         } catch (Exception e) {
             response.status(500);
-            e.printStackTrace();
-            return "Error in getAllUsers:" + e;
+            return gson.toJson("Error in getAllUsers:" + e.getMessage());
         }
     }
 
@@ -41,8 +39,7 @@ public class UserController {
             return gson.toJson(users);
         } catch (Exception e) {
             response.status(500);
-            e.printStackTrace();
-            return "Error:" + e.getMessage();
+            return gson.toJson("Error:" + e.getMessage());
         }
     }
 
@@ -55,8 +52,7 @@ public class UserController {
             return gson.toJson(users);
         } catch (Exception e) {
             response.status(500);
-            e.printStackTrace();
-            return "Error:" + e.getMessage();
+            return gson.toJson("Error:" + e.getMessage());
         }
     }
 
@@ -72,15 +68,14 @@ public class UserController {
                 return gson.toJson(user);
             } else {
                 response.status(404);
-                return "User not found";
+                return gson.toJson("User not found");
             }
         } catch (NumberFormatException e) {
             response.status(400);
-            return "Invalid user ID format";
+            return gson.toJson("Invalid user ID format");
         } catch (Exception e) {
-            e.printStackTrace();
             response.status(500);
-            return "Error in getUserById: " + e;
+            return gson.toJson("Error in getUserById: " + e.getMessage());
         }
     }
 
@@ -110,11 +105,11 @@ public class UserController {
                 return gson.toJson(createdUser);
             } else {
                 response.status(400);
-                return "Error creating user";
+                return gson.toJson("Error creating user");
             }
         } catch (PersistenceException e) {
             response.status(500);
-            return "Error creating user";
+            return gson.toJson("Error creating user");
         }
     }
 
@@ -126,10 +121,10 @@ public class UserController {
             return gson.toJson("User [:id ->" + request.params(":id") + "] successfully deleted");
         } catch (NumberFormatException e) {
             response.status(400);
-            return "Invalid user ID format";
+            return gson.toJson("Invalid user ID format");
         } catch (Exception e) {
             response.status(500);
-            return "Error in deleteUser: " + e.getMessage();
+            return gson.toJson("Error in deleteUser: " + e.getMessage());
         }
     }
 
@@ -153,19 +148,18 @@ public class UserController {
                     return gson.toJson(updatedUser);
                 } else {
                     response.status(500);
-                    return "Error updating user";
+                    return gson.toJson("Error updating user");
                 }
             } else {
                 response.status(404);
-                return "User not found";
+                return gson.toJson("User not found");
             }
         } catch (NumberFormatException e) {
             response.status(400);
-            return "Invalid user ID format";
+            return gson.toJson("Invalid user ID format");
         } catch (Exception e) {
-            e.printStackTrace();
             response.status(500);
-            return "Error in updateUser: " + e;
+            return gson.toJson("Error in updateUser: " + e.getMessage());
         }
     }
 
@@ -257,7 +251,6 @@ public class UserController {
 
     public String getPopularUsers(Request request, Response response) {
         response.type("application/json");
-        System.out.println("POPOLARIII");
         return gson.toJson(userService.getPopularUsers());
     }
 }
