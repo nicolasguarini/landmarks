@@ -310,6 +310,12 @@ public class UserController {
             return gson.toJson("User not found");
         }
     }
+
+    public String getPopularUsers(Request request, Response response) {
+        response.type("application/json");
+        System.out.println("POPOLARIII");
+        return gson.toJson(userService.getPopularUsers());
+    }
 }
 
 

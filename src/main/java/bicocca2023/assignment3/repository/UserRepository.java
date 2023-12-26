@@ -38,6 +38,17 @@ public class UserRepository {
         }
     }
 
+    public List<User> findPopularUsers() {
+        try (EntityManager entityManager = PersistenceManager.getEntityManagerFactory().createEntityManager()) {
+            return entityManager.createQuery(
+                            "SELECT u FROM User u " +
+                                    "WHERE SIZE(u.landmarks) >= 2 " +
+                                    "ORDER BY SIZE(u.followers) DESC", User.class)
+                    .setMaxResults(5)
+                    .getResultList();
+        }
+    }
+
     public User save(User user) {
         try (EntityManager entityManager = PersistenceManager.getEntityManagerFactory().createEntityManager()) {
             entityManager.getTransaction().begin();

@@ -26,6 +26,7 @@ public class Routes {
                 Spark.get("/:id/followings", userController::getFollowingsById);
 
                 Spark.get("/:id/landmarks", userController::getUserLandmarks);
+                Spark.get("/query/most-populars", userController::getPopularUsers);
             });
         });
     }
