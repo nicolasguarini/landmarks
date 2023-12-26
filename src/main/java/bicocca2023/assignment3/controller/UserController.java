@@ -1,6 +1,5 @@
 package bicocca2023.assignment3.controller;
 
-import bicocca2023.assignment3.model.Landmark;
 import bicocca2023.assignment3.model.user.BasicPlanUser;
 import bicocca2023.assignment3.model.user.User;
 import bicocca2023.assignment3.model.user.VipPlanUser;
@@ -17,7 +16,6 @@ import java.util.UUID;
 
 public class UserController {
     private final UserService userService = new UserService();
-    private final LandmarkService landmarkService = new LandmarkService();
     private final Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 
     public String getAllUsers(Request request, Response response) {
@@ -148,7 +146,6 @@ public class UserController {
                     existingUser.setUsername(newUsername.toLowerCase());
                 }
 
-
                 User updatedUser = userService.updateUser(existingUser);
 
                 if (updatedUser != null) {
@@ -171,59 +168,6 @@ public class UserController {
             return "Error in updateUser: " + e;
         }
     }
-
-    public String upgradeUserToVip(Request request, Response response) {
-        response.type("application/json");
-
-        try {
-            UUID userId = UUID.fromString(request.params(":id"));
-            User existingUser = userService.getUserById(userId);
-
-            if (existingUser != null) {
-                VipPlanUser vipUser = (VipPlanUser) userService.upgradeUserToVip(existingUser);
-
-                response.status(200);
-                return gson.toJson(vipUser);
-            } else {
-                response.status(404);
-                return "User not found or not eligible for upgrade";
-            }
-        } catch (NumberFormatException e) {
-            response.status(400);
-            return "Invalid user ID format";
-        } catch (Exception e) {
-            e.printStackTrace();
-            response.status(500);
-            return "Error in upgradeUserToVip: " + e;
-        }
-    }
-
-    public String demoteUserToBasic(Request request, Response response) {
-        response.type("application/json");
-
-        try {
-            UUID userId = UUID.fromString(request.params(":id"));
-            User existingUser = userService.getUserById(userId);
-
-            if (existingUser != null) {
-                User demotedUser = userService.demoteUserToBasic(existingUser);
-
-                response.status(200);
-                return gson.toJson(demotedUser);
-            } else {
-                response.status(404);
-                return "User not found or not eligible for upgrade";
-            }
-        } catch (NumberFormatException e) {
-            response.status(400);
-            return "Invalid user ID format";
-        } catch (Exception e) {
-            e.printStackTrace();
-            response.status(500);
-            return "Error in upgradeUserToVip: " + e;
-        }
-    }
-
 
     public Object followUser(Request request, Response response) {
         response.type("application/json");

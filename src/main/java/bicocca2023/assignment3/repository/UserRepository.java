@@ -1,7 +1,5 @@
 package bicocca2023.assignment3.repository;
 
-import bicocca2023.assignment3.exception.LandmarksLimitException;
-import bicocca2023.assignment3.model.Landmark;
 import bicocca2023.assignment3.model.user.BasicPlanUser;
 import bicocca2023.assignment3.model.user.User;
 import bicocca2023.assignment3.model.user.VipPlanUser;
@@ -80,24 +78,6 @@ public class UserRepository {
             if (user.getId() != null) {
                 // Existing user, merge it
                 user = entityManager.merge(user);
-            }
-
-            entityManager.getTransaction().commit();
-            return user;
-        }
-    }
-
-    public User demote(User user) {
-        try (EntityManager entityManager = PersistenceManager.getEntityManagerFactory().createEntityManager()) {
-            entityManager.getTransaction().begin();
-
-            if (user instanceof VipPlanUser) {
-                delete(user.getId());
-                BasicPlanUser basicUser = new BasicPlanUser();
-                basicUser.setUsername(user.getUsername());
-                save(basicUser);
-                entityManager.getTransaction().commit();
-                return basicUser;
             }
 
             entityManager.getTransaction().commit();

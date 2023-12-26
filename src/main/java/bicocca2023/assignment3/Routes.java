@@ -17,9 +17,6 @@ public class Routes {
                 Spark.get("/vip", userController::getVipUsers);
                 Spark.get("/basic", userController::getBasicUsers);
 
-                Spark.put("/:id/upgrade", userController::upgradeUserToVip);
-                Spark.put("/:id/demote", userController::demoteUserToBasic);
-
                 Spark.post("/:id/follow/:idToFollow", userController::followUser);
                 Spark.post("/:id/unfollow/:idToUnfollow", userController::unfollowUser);
                 Spark.get("/:id/followers", userController::getFollowersById);
