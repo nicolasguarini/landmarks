@@ -105,7 +105,7 @@ public class LandmarkController {
         response.type("application/json");
         try {
             UUID landmarkId = UUID.fromString(request.params(":id"));
-            Landmark landmark = landmarkService.getUserById(landmarkId);
+            Landmark landmark = landmarkService.getLandmarkById(landmarkId);
 
             if (landmark != null) {
                 response.status(200);
@@ -121,6 +121,40 @@ public class LandmarkController {
             e.printStackTrace();
             response.status(500);
             return "Error in getUserById: " + e;
+        }
+    }
+
+    public String updateLandMark(Request request, Response response) {
+        response.type("application/json");
+
+        try{
+            UUID landmarkId = UUID.fromString(request.params("id"));
+
+            String name = request.queryMap("name").value();
+            String description = request.queryMap("description").value();
+            String lat = request.queryMap("lat").value();
+            String lon = request.queryMap("lon").value();
+
+            Landmark landmark = landmarkService.getLandmarkById(landmarkId);
+
+            if (landmark != null) {
+                if(name != null) landmark.setName(name);
+                if(description != null) landmark.setDescription(description);
+                if(lat != null) landmark.getCoordinate().setLatitude(Double.parseDouble(lat));
+                if(lon != null) landmark.getCoordinate().setLongitude(Double.parseDouble(lon));
+
+                response.status(200);
+                return gson.toJson(landmarkService.updateLandmark(landmark));
+            }else{
+                response.status(404);
+                return gson.toJson("Landmark does not exist");
+            }
+        }catch (NumberFormatException e){
+            response.status(400);
+            return gson.toJson("Invalid number format");
+        }catch (Exception e) {
+            response.status(500);
+            return gson.toJson("Internal server error: " + e.getMessage());
         }
     }
 }

@@ -3,10 +3,7 @@ package bicocca2023.assignment3;
 import bicocca2023.assignment3.controller.UserController;
 import bicocca2023.assignment3.util.ApiTestUtils;
 import bicocca2023.assignment3.util.PersistenceManager;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import spark.Spark;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -41,7 +38,7 @@ public class UserTest {
     }
 
     @Test
-    public void testUsersGET() {
+    public void testUsersRead() {
         ApiTestUtils.TestResponse res = ApiTestUtils.request("GET", BASE_URL, null);
 
         assertNotNull(res);
@@ -49,7 +46,7 @@ public class UserTest {
     }
 
     @Test
-    public void testUserPOST() {
+    public void testUserCreate() {
         String testPostUrl = BASE_URL + "?username=" + testUsername;
         String testGetUrl = BASE_URL + "/";
 
@@ -69,7 +66,11 @@ public class UserTest {
     }
 
     @Test
-    public void testVipUserPOST() {
+    public void testVipUserCreate() {
+        String testUsername = UserTest.testUsername;
+        if(UserTest.testUsername != null)
+            testUsername = UserTest.testUsername + "_vip";
+
         String testPostUrl = BASE_URL + "?username=" + testUsername + "&type=VIP";
         String testGetUrl = BASE_URL + "/";
 
@@ -88,27 +89,6 @@ public class UserTest {
     }
 
     @Test
-    public void testUserUpgrade() {
-        String testPostUrl = BASE_URL + "?username=" + testUsername;
-        String testPutUrl = BASE_URL + "/";
-        String testGetUrl = BASE_URL + "/";
-        ApiTestUtils.TestResponse res = ApiTestUtils.request("POST", testPostUrl, null);
-
-        assertNotNull(res);
-        testId = (String) res.json().get("id");
-        testPutUrl += testId + "/upgrade";
-        res = ApiTestUtils.request("PUT", testPutUrl, null);
-
-        assertNotNull(res);
-        testId = (String) res.json().get("id");
-        testGetUrl += testId;
-        res = ApiTestUtils.request("GET", testGetUrl, null);
-
-        assertNotNull(res);
-        assertEquals("VIP", res.json().get("plan"));
-    }
-
-    @Test
     public void testUserUpdate() {
         String testPostUrl = BASE_URL + "?username=" + testUsername;
         String testPutUrl = BASE_URL + "/";
@@ -120,7 +100,7 @@ public class UserTest {
         assertEquals(201, resPost.status);
 
         testId = (String) resPost.json().get("id");
-        testPutUrl += testId + "?username=" + testUsername + "_updated";
+        testPutUrl += "/" + testId + "/update?username=" + testUsername + "_updated";
         testGetUrl += testId;
 
         ApiTestUtils.TestResponse resPut = ApiTestUtils.request("PUT", testPutUrl, null);
@@ -130,5 +110,25 @@ public class UserTest {
         ApiTestUtils.TestResponse resGet = ApiTestUtils.request("GET", testGetUrl, null);
         assertNotNull(resGet);
         assertEquals(testUsername + "_updated", resGet.json().get("username"));
+    }
+
+    @Test
+    public void testUserDelete() {
+        String testPostUrl = BASE_URL + "?username=" + testUsername;
+        String testDelUrl = BASE_URL + "/";
+
+        ApiTestUtils.TestResponse resPost = ApiTestUtils.request("POST", testPostUrl, null);
+        assertNotNull(resPost);
+        assertEquals(201, resPost.status);
+        testId = (String) resPost.json().get("id");
+
+        testDelUrl += testId;
+        ApiTestUtils.TestResponse resDel = ApiTestUtils.request("DELETE", testDelUrl, null);
+        assertNotNull(resDel);
+        assertEquals(200, resDel.status);
+
+        ApiTestUtils.TestResponse resGet = ApiTestUtils.request("GET", BASE_URL + "/" + testId, null);
+        assertNotNull(resGet);
+        assertEquals(404, resGet.status);
     }
 }

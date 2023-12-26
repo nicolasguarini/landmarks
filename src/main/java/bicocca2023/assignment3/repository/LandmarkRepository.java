@@ -25,7 +25,6 @@ public class LandmarkRepository {
         }
     }
 
-
     public void delete(UUID id) {
         try (EntityManager entityManager = PersistenceManager.getEntityManagerFactory().createEntityManager()) {
             try {
@@ -51,6 +50,18 @@ public class LandmarkRepository {
         }
     }
 
+    public Landmark update(Landmark landmark) {
+        try (EntityManager entityManager = PersistenceManager.getEntityManagerFactory().createEntityManager()) {
+            entityManager.getTransaction().begin();
+
+            if (landmark.getId() != null) {
+                landmark = entityManager.merge(landmark);
+            }
+
+            entityManager.getTransaction().commit();
+            return landmark;
+        }
+    }
 
     public Landmark findById(UUID id) {
         try (EntityManager entityManager = PersistenceManager.getEntityManagerFactory().createEntityManager()) {
@@ -65,13 +76,8 @@ public class LandmarkRepository {
             entityManager.getTransaction().commit();
             return landmarks;
         } catch (Exception e) {
-            // Gestire l'eccezione o loggarla
             e.printStackTrace();
             return Collections.emptyList(); // o un altro valore di default
         }
     }
-
-
-
-
 }

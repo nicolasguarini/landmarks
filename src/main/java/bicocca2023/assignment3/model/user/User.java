@@ -12,8 +12,19 @@ import java.util.*;
 @DiscriminatorColumn(name = "user_type")
 @Table(name = "users")
 abstract public class User {
+    @Expose
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
+
+    @Expose @Column(unique = true, nullable = false)
+    private String username;
+
+    @Expose @Column(name="user_type", insertable = false, updatable = false)
+    private String plan;
+
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = {CascadeType.DETACH}, orphanRemoval = true)
-    private List<Landmark> landmarks = new ArrayList<>();
+    private final List<Landmark> landmarks = new ArrayList<>();
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(
@@ -25,16 +36,6 @@ abstract public class User {
 
     @ManyToMany(fetch = FetchType.EAGER, mappedBy = "following", cascade = CascadeType.ALL)
     private final Set<User> followers = new HashSet<>();
-
-    @Expose
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
-    @Expose @Column(name="user_type", insertable = false, updatable = false)
-    private String plan;
-
-    @Expose @Column(unique = true)
-    private String username;
 
     public User() {}
 

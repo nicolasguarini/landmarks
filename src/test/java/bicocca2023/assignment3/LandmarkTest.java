@@ -8,6 +8,8 @@ import bicocca2023.assignment3.util.PersistenceManager;
 import org.junit.jupiter.api.*;
 import spark.Spark;
 
+import java.util.HashMap;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class LandmarkTest {
@@ -47,14 +49,14 @@ public class LandmarkTest {
     }
 
     @Test
-    public void testLandmarkGET() {
+    public void testLandmarkRead() {
         ApiTestUtils.TestResponse res = ApiTestUtils.request("GET", BASE_URL, null);
         assertNotNull(res);
         assertEquals(200, res.status);
     }
 
     @Test
-    public void testLandmarkPOST() {
+    public void testLandmarkCreate() {
         String postUrl = BASE_URL + "?userid=" + testId + "&lat=100&long=100&name=mylandmark";
         ApiTestUtils.TestResponse res = ApiTestUtils.request("POST", postUrl, null);
 
@@ -71,7 +73,7 @@ public class LandmarkTest {
     }
 
     @Test
-    public void testLandmarkDELETE() {
+    public void testLandmarkDelete() {
         String postUrl = BASE_URL + "?userid=" + testId + "&lat=100&long=100&name=mylandmark";
         ApiTestUtils.TestResponse res = ApiTestUtils.request("POST", postUrl, null);
 
@@ -109,5 +111,24 @@ public class LandmarkTest {
 
         assertNotNull(res);
         assertEquals(400, res.status);
+    }
+
+    @Test
+    public void testLandmarkUpdate() {
+        String postUrl = BASE_URL + "?userid=" + testId + "&lat=100&long=100&name=mylandmark";
+        ApiTestUtils.TestResponse res = ApiTestUtils.request("POST", postUrl, null);
+
+        assertNotNull(res);
+        String landmarkId = (String) res.json().get("id");
+        assertEquals(201, res.status);
+
+        String updateUrl = BASE_URL + "/" + landmarkId + "/update?name=myupdatedlandmark&lat=123&description=updateddescription";
+        ApiTestUtils.TestResponse resUpdate = ApiTestUtils.request("PUT", updateUrl, null);
+
+        assertNotNull(resUpdate);
+        HashMap body = resUpdate.json();
+        assertEquals("myupdatedlandmark", body.get("name"));
+        assertEquals("updateddescription", body.get("description"));
+        assertEquals("{longitude=100.0, latitude=123.0}", body.get("coordinate").toString());
     }
 }

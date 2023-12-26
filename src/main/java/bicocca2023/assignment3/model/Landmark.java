@@ -13,8 +13,14 @@ public class Landmark {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+
     @Expose
+    @Column(nullable = false)
     private String name;
+
+    @Expose
+    private String description;
+
     @Expose
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -34,7 +40,15 @@ public class Landmark {
     }
 
     public String getName() {
-        return this.name;
+        return name;
+    }
+
+    public void setDescription(String description){
+        this.description = description;
+    }
+
+    public String getDescription(){
+        return description;
     }
 
     public void setUser(User user) {

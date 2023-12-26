@@ -8,9 +8,11 @@ import java.util.UUID;
 @Embeddable
 public class Coordinate {
     @Expose
+    @Column(nullable = false)
     private Double longitude;
 
     @Expose
+    @Column(nullable = false)
     private Double latitude;
 
     @Expose

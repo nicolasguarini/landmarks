@@ -19,7 +19,11 @@ public class LandmarkService {
         landmarkRepository.delete(id);
     }
 
-    public Landmark getUserById(UUID id) {
+    public Landmark getLandmarkById(UUID id) {
         return landmarkRepository.findById(id);
+    }
+
+    public Landmark updateLandmark(Landmark landmark) {
+        return landmarkRepository.update(landmark);
     }
 }
