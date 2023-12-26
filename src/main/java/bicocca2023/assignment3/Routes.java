@@ -21,9 +21,11 @@ public class Routes {
                 Spark.put("/:id/demote", userController::demoteUserToBasic);
 
                 Spark.post("/:id/follow/:idToFollow", userController::followUser);
-                Spark.patch("/:id/unfollow/:idToUnfollow", userController::unfollowUser);
+                Spark.post("/:id/unfollow/:idToUnfollow", userController::unfollowUser);
                 Spark.get("/:id/followers", userController::getFollowersById);
                 Spark.get("/:id/followings", userController::getFollowingsById);
+
+                Spark.get("/:id/landmarks", userController::getUserLandmarks);
             });
         });
     }

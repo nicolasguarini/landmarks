@@ -295,6 +295,21 @@ public class UserController {
         User user = userService.getUserById(userId);
         return gson.toJson(user.getFollowings());
     }
+
+    public String getUserLandmarks(Request request, Response response) {
+        response.type("application/json");
+
+        UUID userId = UUID.fromString(request.params("id"));
+        User user = userService.getUserById(userId);
+
+        if(user != null){
+            response.status(200);
+            return gson.toJson(user.getLandmarks());
+        }else{
+            response.status(404);
+            return gson.toJson("User not found");
+        }
+    }
 }
 
 

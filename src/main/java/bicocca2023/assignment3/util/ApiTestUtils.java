@@ -7,8 +7,10 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 public class ApiTestUtils {
     public static TestResponse request(String method, String path, String requestBody) {
@@ -43,6 +45,10 @@ public class ApiTestUtils {
 
         public HashMap json() {
             return new Gson().fromJson(body, HashMap.class);
+        }
+
+        public List<HashMap> jsonList() {
+            return Arrays.asList(new Gson().fromJson(body, HashMap[].class));
         }
     }
 

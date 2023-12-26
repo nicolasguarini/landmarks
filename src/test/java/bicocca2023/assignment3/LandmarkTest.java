@@ -53,6 +53,10 @@ public class LandmarkTest {
         ApiTestUtils.TestResponse res = ApiTestUtils.request("GET", BASE_URL, null);
         assertNotNull(res);
         assertEquals(200, res.status);
+
+        res = ApiTestUtils.request("GET", "/api/users/" + testId + "/landmarks", null);
+        assertNotNull(res);
+        assertEquals(200, res.status);
     }
 
     @Test
