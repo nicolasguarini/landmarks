@@ -129,6 +129,6 @@ public class UserTest {
 
         ApiTestUtils.TestResponse resGet = ApiTestUtils.request("GET", BASE_URL + "/" + testId, null);
         assertNotNull(resGet);
-        assertEquals(404, resGet.status);
+        assertEquals(410, resGet.status);
     }
 }

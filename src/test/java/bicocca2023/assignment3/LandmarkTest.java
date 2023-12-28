@@ -100,7 +100,7 @@ public class LandmarkTest {
         res = ApiTestUtils.request("GET", delUrl, null);
 
         assertNotNull(res);
-        assertEquals(404, res.status);
+        assertEquals(410, res.status);
     }
 
     @Test

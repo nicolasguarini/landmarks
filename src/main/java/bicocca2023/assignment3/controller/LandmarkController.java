@@ -103,7 +103,7 @@ public class LandmarkController {
                 response.status(200);
                 return gson.toJson(landmark);
             } else {
-                response.status(404);
+                response.status(410);
                 return "User not found";
             }
         } catch (NumberFormatException e) {
@@ -137,7 +137,7 @@ public class LandmarkController {
                 response.status(200);
                 return gson.toJson(landmarkService.updateLandmark(landmark));
             }else{
-                response.status(404);
+                response.status(410);
                 return gson.toJson("Landmark does not exist");
             }
         }catch (NumberFormatException e){

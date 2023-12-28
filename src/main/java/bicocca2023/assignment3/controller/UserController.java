@@ -67,7 +67,7 @@ public class UserController {
                 response.status(200);
                 return gson.toJson(user);
             } else {
-                response.status(404);
+                response.status(410);
                 return gson.toJson("User not found");
             }
         } catch (NumberFormatException e) {
@@ -151,7 +151,7 @@ public class UserController {
                     return gson.toJson("Error updating user");
                 }
             } else {
-                response.status(404);
+                response.status(410);
                 return gson.toJson("User not found");
             }
         } catch (NumberFormatException e) {
@@ -244,7 +244,7 @@ public class UserController {
             response.status(200);
             return gson.toJson(user.getLandmarks());
         }else{
-            response.status(404);
+            response.status(410);
             return gson.toJson("User not found");
         }
     }
