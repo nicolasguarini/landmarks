@@ -14,14 +14,24 @@ public class LandmarkRepository {
 
     public Landmark save(Landmark landmark) {
         try (EntityManager entityManager = PersistenceManager.getEntityManagerFactory().createEntityManager()) {
-            entityManager.getTransaction().begin();
+            try{
+                entityManager.getTransaction().begin();
 
-            if (landmark.getId() == null) {
-                entityManager.persist(landmark);
+                if (landmark.getId() == null) {
+                    entityManager.persist(landmark);
+                }
+
+                entityManager.getTransaction().commit();
+                return landmark;
+            }catch(Exception e){
+                System.err.println("Error: " + e.getMessage());
+
+                if (entityManager.getTransaction().isActive()) {
+                    entityManager.getTransaction().rollback();
+                }
+
+                return null;
             }
-
-            entityManager.getTransaction().commit();
-            return landmark;
         }
     }
 
@@ -51,14 +61,24 @@ public class LandmarkRepository {
 
     public Landmark update(Landmark landmark) {
         try (EntityManager entityManager = PersistenceManager.getEntityManagerFactory().createEntityManager()) {
-            entityManager.getTransaction().begin();
+            try{
+                entityManager.getTransaction().begin();
 
-            if (landmark.getId() != null) {
-                landmark = entityManager.merge(landmark);
+                if (landmark.getId() != null) {
+                    landmark = entityManager.merge(landmark);
+                }
+
+                entityManager.getTransaction().commit();
+                return landmark;
+            }catch(Exception e){
+                System.err.println("Error: " + e.getMessage());
+
+                if (entityManager.getTransaction().isActive()) {
+                    entityManager.getTransaction().rollback();
+                }
+
+                return null;
             }
-
-            entityManager.getTransaction().commit();
-            return landmark;
         }
     }
 

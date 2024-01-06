@@ -49,39 +49,66 @@ public class UserRepository {
 
     public User save(User user) {
         try (EntityManager entityManager = PersistenceManager.getEntityManagerFactory().createEntityManager()) {
-            entityManager.getTransaction().begin();
-            if (user.getId() == null) {
-                entityManager.persist(user);
-            } else {
-                user = entityManager.merge(user);
+            try{
+                entityManager.getTransaction().begin();
+                if (user.getId() == null) {
+                    entityManager.persist(user);
+                } else {
+                    user = entityManager.merge(user);
+                }
+                entityManager.getTransaction().commit();
+                return user;
+            }catch(Exception e){
+                System.err.println("Error: " + e.getMessage());
+
+                if (entityManager.getTransaction().isActive()) {
+                    entityManager.getTransaction().rollback();
+                }
+
+                return null;
             }
-            entityManager.getTransaction().commit();
-            return user;
         }
     }
 
     public void delete(UUID id) {
         try (EntityManager entityManager = PersistenceManager.getEntityManagerFactory().createEntityManager()) {
-            entityManager.getTransaction().begin();
-            User user = entityManager.find(User.class, id);
-            if (user != null) {
-                entityManager.remove(user);
+            try{
+                entityManager.getTransaction().begin();
+                User user = entityManager.find(User.class, id);
+                if (user != null) {
+                    entityManager.remove(user);
+                }
+                entityManager.getTransaction().commit();
+            }catch(Exception e){
+                System.err.println("Error: " + e.getMessage());
+
+                if (entityManager.getTransaction().isActive()) {
+                    entityManager.getTransaction().rollback();
+                }
             }
-            entityManager.getTransaction().commit();
         }
     }
 
     public User update(User user) {
         try (EntityManager entityManager = PersistenceManager.getEntityManagerFactory().createEntityManager()) {
-            entityManager.getTransaction().begin();
+            try{
+                entityManager.getTransaction().begin();
 
-            if (user.getId() != null) {
-                // Existing user, merge it
-                user = entityManager.merge(user);
+                if (user.getId() != null) {
+                    user = entityManager.merge(user);
+                }
+
+                entityManager.getTransaction().commit();
+                return user;
+            }catch(Exception e){
+                System.err.println("Error: " + e.getMessage());
+
+                if (entityManager.getTransaction().isActive()) {
+                    entityManager.getTransaction().rollback();
+                }
+
+                return null;
             }
-
-            entityManager.getTransaction().commit();
-            return user;
         }
     }
 }
