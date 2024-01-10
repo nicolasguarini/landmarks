@@ -11,7 +11,7 @@ Before you begin, ensure you have met the following requirements:
 
 - **Java:** Install Java Development Kit (JDK) on your system. You can download it from [Oracle's website](https://www.oracle.com/java/technologies/javase-downloads.html) or use [OpenJDK](https://adoptopenjdk.net/).
 - **Maven:** Install Maven to manage the project's build and dependencies. You can download Maven from [here](https://maven.apache.org/download.cgi) and follow the [installation instructions](https://maven.apache.org/install.html).
-- **PostgreSQL:** Set up a PostgreSQL database. You can download it from [here](https://www.postgresql.org/download/) or use a cloud-based solution like [PostgreSQL on AWS](https://aws.amazon.com/rds/postgresql/).
+- **PostgreSQL:** Set up a PostgreSQL database. You can download it from [the official website](https://www.postgresql.org/download/) or use a cloud-based solution like [PostgreSQL on AWS](https://aws.amazon.com/rds/postgresql/) or [Supabase](https://supabase.com/).
 
 ## Installation
 
@@ -19,6 +19,7 @@ Before you begin, ensure you have met the following requirements:
     ```bash
     git clone https://gitlab.com/bicocca_projects/2023_assignment3_landmarks
     ```
+   
 
 2. **Navigate to Project Directory:**
     ```bash
@@ -30,16 +31,12 @@ Before you begin, ensure you have met the following requirements:
     - Open the file and provide your PostgreSQL database credentials.
     - Save the file.
 
+
 4. **Rename the Configuration File:**
     - Rename `persistence.example.xml` to `persistence.xml`.
 
-5. **Install Java and Maven:**
-    - Follow the instructions for your operating system to install [Java](https://www.oracle.com/java/technologies/javase-downloads.html) and [Maven](https://maven.apache.org/download.cgi).
 
-6. **Install PostgreSQL:**
-    - Follow the installation instructions for [PostgreSQL](https://www.postgresql.org/download/).
-    - Alternatively, you can create a free in-cloud instance using [Supabase](https://supabase.com/)
-7. **Build the Project:**
+5. **Build the Project:**
     ```bash
     mvn clean install
     ```
@@ -50,8 +47,9 @@ Before you begin, ensure you have met the following requirements:
    - Using an IDE (e.g., IntelliJ IDEA or Eclipse):
 
       - Open the project in your IDE.
-      - Locate the main class (likely the one with the main method) in the main package.
+      - Locate the `Main.java` file in the `main` package.
       - Run the main class.
+
    - Using the command line:
 
       ```bash
@@ -74,7 +72,7 @@ Before you begin, ensure you have met the following requirements:
 ## Additional Notes
 
 - Ensure that Java, Maven, and PostgreSQL are properly installed and configured.
-- Make sure PostgreSQL is running and accessible.
+- Make sure the PostgreSQL server and database are running and accessible.
 
 ## API Usage
 
@@ -82,7 +80,7 @@ Before you begin, ensure you have met the following requirements:
 Create a User:
 - **Route:** `POST /api/users`
 - **Parameters:**
-   - Request Body: User details (e.g., username, email, password).
+  - `username`
 
 Get All Users:
 - **Route:** `GET /api/users`
@@ -90,19 +88,16 @@ Get All Users:
 
 Get User by ID:
 - **Route:** `GET /api/users/:id`
-- **Parameters:**
-   - Path Parameter: User ID.
+- **Parameters:** None
 
 Update User:
 - **Route:** `PUT /api/users/:id/update`
 - **Parameters:**
-   - Path Parameter: User ID.
-   - Request Body: Updated user details.
+   - `username`
 
 Delete User:
 - **Route:** `DELETE /api/users/:id`
-- **Parameters:**
-   - Path Parameter: User ID.
+- **Parameters:** None
 
 Get VIP Users:
 - **Route:** `GET /api/users/vip`
@@ -114,28 +109,23 @@ Get Basic Users:
 
 Follow User:
 - **Route:** `POST /api/users/:id/follow/:idToFollow`
-- **Parameters:**
-   - Path Parameters: User ID, ID to follow.
+- **Parameters:** None
 
 Unfollow User:
 - **Route:** `POST /api/users/:id/unfollow/:idToUnfollow`
-- **Parameters:**
-   - Path Parameters: User ID, ID to unfollow.
+- **Parameters:** None
 
 Get Followers:
 - **Route:** `GET /api/users/:id/followers`
-- **Parameters:**
-   - Path Parameter: User ID.
+- **Parameters:** None
 
 Get Followings:
 - **Route:** `GET /api/users/:id/followings`
-- **Parameters:**
-   - Path Parameter: User ID.
+- **Parameters:** None
 
 Get User Landmarks:
 - **Route:** `GET /api/users/:id/landmarks`
-- **Parameters:**
-   - Path Parameter: User ID.
+- **Parameters:** None
 
 Get Popular Users:
 - **Route:** `GET /api/users/queries/most-populars`
@@ -153,16 +143,16 @@ Get All Landmarks:
 
 Get Landmark by ID:
 - **Route:** `GET /api/landmarks/:id`
-- **Parameters:**
-   - Path Parameter: Landmark ID.
+- **Parameters:** None
 
 Update Landmark:
 - **Route:** `PUT /api/landmarks/:id/update`
 - **Parameters:**
-   - Path Parameter: Landmark ID.
-   - Request Body: Updated landmark details.
+   - `userid`
+   - `name`
+   - `lat`
+   - `long`
 
 Delete Landmark:
 - **Route:** `DELETE /api/landmarks/:id`
-- **Parameters:**
-   - Path Parameter: Landmark ID.
+- **Parameters:** None

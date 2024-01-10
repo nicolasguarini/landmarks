@@ -40,19 +40,20 @@ The application source code is structured in the following packages:
 - **`controller`**: Controllers handle incoming HTTP requests, process them, and provide an appropriate response. They act as an intermediary between the client (who made the request) and the application's business logic (Service classes);
 
 
-- **`model`**: Models represent the application's data and business logic. They encapsulate the structure of data entities and provide methods for interacting with the data;
-
-
 - **`service`**: Services contain the business logic of the application. They act as an intermediary between controllers and repositories, handling complex operations, and providing a higher-level API. They act as an intermediary between the controller (or anyone else who wants to interact with the database), and the repository;
 
 
 - **`repository`**: Repositories are responsible for data access and database interactions. They provide methods for querying, saving, and deleting entities;
 
 
+- **`model`**: Models represent the application's data and business logic. They encapsulate the structure of data entities and provide methods for interacting with the data;
+
+
 - **`util`**: Utility classes contain common functionalities that can be reused across the application. The main classes in this folder are **`PersistenceManager`**, which manages the lifecycle of `EntityManagerFactory` and provides methods for initializing, obtaining, and closing it, and **`ApiTestUtils`**, which provides useful functions for making and handling responses of API calls. Specifically, this class is used to carry out the JUnit tests of the application;
 
 
 - **`exception`**: Exception classes used around the project.
+
 
 By adhering to the MVC pattern, the project's structure encourages separation of concerns, making the codebase modular, maintainable, and scalable.
 
