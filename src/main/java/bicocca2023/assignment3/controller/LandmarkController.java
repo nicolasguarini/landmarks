@@ -1,6 +1,8 @@
 package bicocca2023.assignment3.controller;
 
+import bicocca2023.assignment3.exception.LandmarkNotFoundException;
 import bicocca2023.assignment3.exception.LandmarksLimitException;
+import bicocca2023.assignment3.exception.UserNotFoundException;
 import bicocca2023.assignment3.model.Coordinate;
 import bicocca2023.assignment3.model.Landmark;
 import bicocca2023.assignment3.model.user.User;
@@ -34,7 +36,7 @@ public class LandmarkController {
             if (name == null || latitude == null || longitude == null) {
                 throw new IllegalArgumentException("Name, latitude, or longitude not provided");
             } else if (user == null) {
-                throw new IllegalArgumentException("User ID doesn't exist!");
+                throw new UserNotFoundException();
             }
 
             Landmark landmark = new Landmark();
@@ -63,6 +65,9 @@ public class LandmarkController {
         } catch (LandmarksLimitException e) {
             response.status(400);
             return gson.toJson("User has reached landmarks limit");
+        } catch (UserNotFoundException e) {
+            response.status(410);
+            return gson.toJson("User not found.");
         }
     }
 
@@ -81,12 +86,21 @@ public class LandmarkController {
     }
 
     public String deleteLandmark(Request request, Response response) {
+        response.type("application/json");
+
         try {
             UUID landmarkId = UUID.fromString(request.params(":id"));
+
+            if (landmarkService.getLandmarkById(landmarkId) == null) {
+                throw new LandmarkNotFoundException();
+            }
+
             landmarkService.deleteLandmark(landmarkId);
             response.status(200);
             return gson.toJson("Landmark [:id ->" + request.params(":id") + "] successfully deleted");
-
+        } catch (LandmarkNotFoundException e) {
+            response.status(410);
+            return  gson.toJson("Landmark not found.");
         } catch (Exception e) {
             response.status(500);
             return gson.toJson( "Error in deleteLandmark: " + e.getMessage());
@@ -95,23 +109,26 @@ public class LandmarkController {
 
     public String getLandmarkById(Request request, Response response) {
         response.type("application/json");
+
         try {
             UUID landmarkId = UUID.fromString(request.params(":id"));
             Landmark landmark = landmarkService.getLandmarkById(landmarkId);
 
-            if (landmark != null) {
-                response.status(200);
-                return gson.toJson(landmark);
-            } else {
-                response.status(410);
-                return "User not found";
+            if (landmark == null) {
+                throw new LandmarkNotFoundException();
             }
+
+            response.status(200);
+            return gson.toJson(landmark);
         } catch (NumberFormatException e) {
             response.status(400);
             return "Invalid user ID format";
+        } catch (LandmarkNotFoundException e) {
+            response.status(410);
+            return gson.toJson("Landmark not found.");
         } catch (Exception e) {
             response.status(500);
-            return gson.toJson("Error in getUserById: " + e.getMessage());
+            return gson.toJson("Error in getLandmarkById: " + e.getMessage());
         }
     }
 
@@ -128,22 +145,24 @@ public class LandmarkController {
 
             Landmark landmark = landmarkService.getLandmarkById(landmarkId);
 
-            if (landmark != null) {
-                if(name != null) landmark.setName(name);
-                if(description != null) landmark.setDescription(description);
-                if(lat != null) landmark.getCoordinate().setLatitude(Double.parseDouble(lat));
-                if(lon != null) landmark.getCoordinate().setLongitude(Double.parseDouble(lon));
-
-                response.status(200);
-                return gson.toJson(landmarkService.updateLandmark(landmark));
-            }else{
-                response.status(410);
-                return gson.toJson("Landmark does not exist");
+            if (landmark == null) {
+                throw new LandmarkNotFoundException();
             }
-        }catch (NumberFormatException e){
+
+            if(name != null) landmark.setName(name);
+            if(description != null) landmark.setDescription(description);
+            if(lat != null) landmark.getCoordinate().setLatitude(Double.parseDouble(lat));
+            if(lon != null) landmark.getCoordinate().setLongitude(Double.parseDouble(lon));
+
+            response.status(200);
+            return gson.toJson(landmarkService.updateLandmark(landmark));
+        } catch (NumberFormatException e) {
             response.status(400);
-            return gson.toJson("Invalid number format");
-        }catch (Exception e) {
+            return gson.toJson("Invalid number format,");
+        } catch (LandmarkNotFoundException e) {
+            response.status(410);
+            return gson.toJson("Landmark not found.");
+        } catch (Exception e) {
             response.status(500);
             return gson.toJson("Internal server error: " + e.getMessage());
         }

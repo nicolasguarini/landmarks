@@ -1,5 +1,9 @@
 package bicocca2023.assignment3.controller;
 
+import bicocca2023.assignment3.exception.AlreadyFollowingException;
+import bicocca2023.assignment3.exception.NotFollowingException;
+import bicocca2023.assignment3.exception.UserAlreadyExistsException;
+import bicocca2023.assignment3.exception.UserNotFoundException;
 import bicocca2023.assignment3.model.user.BasicPlanUser;
 import bicocca2023.assignment3.model.user.User;
 import bicocca2023.assignment3.model.user.VipPlanUser;
@@ -63,16 +67,18 @@ public class UserController {
             UUID userId = UUID.fromString(request.params(":id"));
             User user = userService.getUserById(userId);
 
-            if (user != null) {
-                response.status(200);
-                return gson.toJson(user);
-            } else {
-                response.status(410);
-                return gson.toJson("User not found");
+            if (user == null) {
+                throw new UserNotFoundException();
             }
+
+            response.status(200);
+            return gson.toJson(user);
         } catch (NumberFormatException e) {
             response.status(400);
             return gson.toJson("Invalid user ID format");
+        } catch (UserNotFoundException e){
+            response.status(410);
+            return gson.toJson("User not found");
         } catch (Exception e) {
             response.status(500);
             return gson.toJson("Error in getUserById: " + e.getMessage());
@@ -88,6 +94,10 @@ public class UserController {
 
             if (username == null) {
                 throw new IllegalArgumentException("No username provided");
+            }
+
+            if (userService.getUserByUsername(username) != null) {
+                throw new UserAlreadyExistsException();
             }
 
             User user;
@@ -110,18 +120,31 @@ public class UserController {
         } catch (PersistenceException e) {
             response.status(500);
             return gson.toJson("Error creating user");
+        } catch (UserAlreadyExistsException e) {
+            response.status(400);
+            return gson.toJson("User already exists.");
         }
     }
 
     public String deleteUser(Request request, Response response) {
         try {
             UUID userId = UUID.fromString(request.params(":id"));
+
+            User existingUser = userService.getUserById(userId);
+
+            if (existingUser == null) {
+                throw new UserNotFoundException();
+            }
+
             userService.deleteUser(userId);
             response.status(200);
             return gson.toJson("User [:id ->" + request.params(":id") + "] successfully deleted");
         } catch (NumberFormatException e) {
             response.status(400);
             return gson.toJson("Invalid user ID format");
+        } catch (UserNotFoundException e){
+            response.status(410);
+            return gson.toJson("User not found");
         } catch (Exception e) {
             response.status(500);
             return gson.toJson("Error in deleteUser: " + e.getMessage());
@@ -135,28 +158,30 @@ public class UserController {
             UUID userId = UUID.fromString(request.params(":id"));
             User existingUser = userService.getUserById(userId);
 
-            if (existingUser != null) {
-                String newUsername = request.queryMap("username").value();
-                if (newUsername != null) {
-                    existingUser.setUsername(newUsername.toLowerCase());
-                }
+            if (existingUser == null) {
+                throw new UserNotFoundException();
+            }
 
-                User updatedUser = userService.updateUser(existingUser);
+            String newUsername = request.queryMap("username").value();
+            if (newUsername != null) {
+                existingUser.setUsername(newUsername.toLowerCase());
+            }
 
-                if (updatedUser != null) {
-                    response.status(200);
-                    return gson.toJson(updatedUser);
-                } else {
-                    response.status(500);
-                    return gson.toJson("Error updating user");
-                }
+            User updatedUser = userService.updateUser(existingUser);
+
+            if (updatedUser != null) {
+                response.status(200);
+                return gson.toJson(updatedUser);
             } else {
-                response.status(410);
-                return gson.toJson("User not found");
+                response.status(500);
+                return gson.toJson("Error updating user");
             }
         } catch (NumberFormatException e) {
             response.status(400);
             return gson.toJson("Invalid user ID format");
+        } catch (UserNotFoundException e){
+            response.status(410);
+            return gson.toJson("User not found");
         } catch (Exception e) {
             response.status(500);
             return gson.toJson("Error in updateUser: " + e.getMessage());
@@ -173,17 +198,22 @@ public class UserController {
             User userToFollow = userService.getUserById(userToFollowId);
 
             if(user == null || userToFollow == null){
-                throw new IllegalArgumentException("No user provided");
+                throw new UserNotFoundException();
             }
 
             if (user.isFollowing(userToFollow)) {
-                response.status(400);
-                return gson.toJson("User is already following this user.");
+                throw new AlreadyFollowingException();
             }
 
             userService.followUser(user, userToFollow);
             response.status(200);
             return gson.toJson("User " + user.getUsername() + " is now following user " + userToFollow.getUsername());
+        } catch (UserNotFoundException e) {
+            response.status(410);
+            return gson.toJson("User not found.");
+        } catch(AlreadyFollowingException e) {
+            response.status(400);
+            return gson.toJson("User is already following this user.");
         } catch (Exception e) {
             response.status(500);
             return gson.toJson("Error in followUser: " + e.getMessage());
@@ -201,17 +231,22 @@ public class UserController {
             User userToUnfollow = userService.getUserById(userToUnfollowId);
 
             if (user == null || userToUnfollow == null) {
-                throw new IllegalArgumentException("No user provided");
+                throw new UserNotFoundException();
             }
 
             if (!user.isFollowing(userToUnfollow)) {
-                response.status(400);
-                return gson.toJson("User " + user.getUsername() + " is not following user " + userToUnfollow.getUsername());
+                throw new NotFollowingException();
             }
 
             userService.unfollowUser(user, userToUnfollow);
             response.status(200);
             return gson.toJson("User " + user.getUsername() + " has unfollowed user " + userToUnfollow.getUsername());
+        } catch (UserNotFoundException e){
+            response.status(410);
+            return gson.toJson("User not found.");
+        } catch (NotFollowingException e) {
+            response.status(400);
+            return gson.toJson("User is not following the other user");
         } catch (Exception e) {
             response.status(500);
             return gson.toJson("Error in unfollowUser: " + e.getMessage());
@@ -237,15 +272,22 @@ public class UserController {
     public String getUserLandmarks(Request request, Response response) {
         response.type("application/json");
 
-        UUID userId = UUID.fromString(request.params("id"));
-        User user = userService.getUserById(userId);
+        try {
+            UUID userId = UUID.fromString(request.params("id"));
+            User user = userService.getUserById(userId);
 
-        if(user != null){
+            if (user == null) {
+                throw new UserNotFoundException();
+            }
+
             response.status(200);
             return gson.toJson(user.getLandmarks());
-        }else{
+        } catch (UserNotFoundException e){
             response.status(410);
-            return gson.toJson("User not found");
+            return gson.toJson("User not found.");
+        } catch (Exception e){
+            response.status(500);
+            return gson.toJson("Error: " + e.getMessage());
         }
     }
 

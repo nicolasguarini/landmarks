@@ -19,6 +19,8 @@ public class UserService {
 
     public User getUserById(UUID id) { return userRepository.findById(id); }
 
+    public User getUserByUsername(String username) { return userRepository.findByUsername(username); }
+
     public User createUser(User user) { return userRepository.save(user); }
 
     public void deleteUser(UUID id) { userRepository.delete(id); }

@@ -36,6 +36,21 @@ public class UserRepository {
         }
     }
 
+    public User findByUsername(String username) {
+        try (EntityManager entityManager = PersistenceManager.getEntityManagerFactory().createEntityManager()) {
+            List<User> users = entityManager
+                    .createQuery("SELECT u FROM User u WHERE u.username = :username", User.class)
+                    .setParameter("username", username)
+                    .getResultList();
+
+            if (users.isEmpty()){
+                return null;
+            } else {
+                return users.get(0);
+            }
+        }
+    }
+
     public List<User> findPopularUsers() {
         try (EntityManager entityManager = PersistenceManager.getEntityManagerFactory().createEntityManager()) {
             return entityManager.createQuery(
